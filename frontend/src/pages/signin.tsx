@@ -16,11 +16,11 @@ export default function SigninPage() {
         e.preventDefault();
         try {
             const res = await userSignin(form);
-            signin(res.username, res.user_id, res.accessToken, res.refreshToken);
+            signin(res.username, res.user_id, res.role, res.accessToken, res.refreshToken);
             navigate("/home");
         } 
         catch (err) {
-            alert("Sign in failed");
+            alert(`Sign in failed. ${err}`);
             console.error(err);
         }
     };
@@ -36,6 +36,7 @@ export default function SigninPage() {
                     value={form.email}
                     onChange={handleChange}
                     className="w-full border p-2 mb-4 rounded"
+                    required
                 />
                 <input
                     name="password"
@@ -44,8 +45,9 @@ export default function SigninPage() {
                     value={form.password}
                     onChange={handleChange}
                     className="w-full border p-2 mb-6 rounded"
+                    required
                 />
-                
+
                 <button type="submit" className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">
                     Sign In
                 </button>

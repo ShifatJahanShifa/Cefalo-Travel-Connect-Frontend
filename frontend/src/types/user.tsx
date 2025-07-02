@@ -8,3 +8,10 @@ export interface getUser {
     phone_no?: string 
     created_at?: string
 }
+
+export type updateUserInfo = {
+    profile_picture_url?: string;
+    bio?: string;
+    role?: string;
+    hashed_password?: string;
+}

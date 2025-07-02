@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createPost } from "../../services/postService";
+import { useState, useEffect } from "react";
+import { fetchLocationFromMapbox } from "../../utils/mapboxfetcher";
+import { uploadImageToCloudinary } from "../../utils/cloudinary";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const effortLevels = ["easy", "medium", "hard"];
 const categories = [
@@ -14,66 +15,11 @@ const categories = [
 ];
 
 
-
-// i am adding two needed fucntions. 
-
-async function fetchLatLng(placeName: string) {
-    if (!placeName) return null;
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-      placeName
-    )}&format=json&limit=1`;
-
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data && data.length > 0) {
-        return {
-          latitude: parseFloat(data[0].lat),
-          longitude: parseFloat(data[0].lon),
-        };
-      }
-    } 
-    catch (error) {
-      console.error("Geocoding failed:", error);
-    }
-    return null;
-}
-
-
-async function uploadImageToCloudinary(file: File) {
-    const url = `https://api.cloudinary.com/v1_1/dwdtpwu38/image/upload`;
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "CTConnect");  
-
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.secure_url) {
-        return data.secure_url;
-      } else {
-        console.error("Upload failed", data);
-        return null;
-      }
-    } catch (error) {
-      console.error("Error uploading image", error);
-      return null;
-    }
-}
-
-export default function PostForm() {
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
+export default function PostForm({ initialData, onSubmit }: { initialData?: any; onSubmit: (data: any) => Promise<void> }) {
+  const [formData, setFormData] = useState(initialData || {
     title: "",
     description: "",
-    total_cost: 0,
+    // total_cost: ,
     duration: "",
     effort: "",
     categories: [] as string[],
@@ -84,10 +30,56 @@ export default function PostForm() {
     images: [] as any[],
   });
 
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // useEffect(() => {
+  //   if (location.state?.lat && location.state?.lng && location.state.section !== undefined) {
+  //     const { section, index, lat, lng } = location.state;
+  //     const updated = [...formData[section]];
+  //     updated[index] = { ...updated[index], latitude: lat, longitude: lng };
+  //     setFormData((prev: any) => ({
+  //       ...prev,
+  //       [section]: updated,
+  //     }));
+
+  //     window.history.replaceState({}, document.title);
+  //   }
+  // }, [location.state]);
+
+
+  useEffect(() => {
+  if (location.state?.lat && location.state?.lng && location.state.section !== undefined) {
+    const { section, index, lat, lng, place_name } = location.state;
+    const updated = [...formData[section]];
+    updated[index] = {
+      ...updated[index],
+      latitude: lat,
+      longitude: lng,
+      ...(place_name ? { place_name } : {}),
+    };
+
+    setFormData((prev: any) => ({
+      ...prev,
+      [section]: updated,
+    }));
+
+    // Clear location.state to avoid reapplying
+    window.history.replaceState({}, document.title);
+  }
+}, [location.state]);
+
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
 
   const handleAddSectionItem = (section: string, newItem: any) => {
     setFormData({
@@ -95,7 +87,6 @@ export default function PostForm() {
       [section]: [...(formData as any)[section], newItem],
     });
   };
-
 
   const handleRemoveSectionItem = (section: string, index: number) => {
     const updated = [...(formData as any)[section]];
@@ -106,37 +97,32 @@ export default function PostForm() {
     });
   };
 
-
-  const handleNestedChange = (
-    section: string,
-    index: number,
-    field: string,
-    value: any
-  ) => {
+  const handleNestedChange = (section: string, index: number, field: string, value: any) => {
     const updated = [...(formData as any)[section]];
     updated[index][field] = value;
     setFormData({ ...formData, [section]: updated });
   };
 
-
-  const handleAccommodationNameChange = async (
-    index: number,
-    value: string
-  ) => {
+  const handleAccommodationNameChange = async (index: number, value: string) => {
     const updated = [...formData.accommodations];
     updated[index].accommodation_name = value;
     setFormData({ ...formData, accommodations: updated });
 
     if (value.trim()) {
-      const coords = await fetchLatLng(value);
-      if (coords) {
-        updated[index].latitude = coords.latitude;
-        updated[index].longitude = coords.longitude;
-        setFormData({ ...formData, accommodations: updated });
+      try {
+        const coords = await fetchLocationFromMapbox(value);
+        if (coords) {
+          updated[index].latitude = coords.latitude;
+          updated[index].longitude = coords.longitude;
+          setFormData({ ...formData, accommodations: updated });
+        }
+      } 
+      catch(err) 
+      {
+        console.log(err)
       }
     }
   };
-
 
   const handlePlaceNameChange = async (index: number, value: string) => {
     const updated = [...formData.places];
@@ -144,32 +130,36 @@ export default function PostForm() {
     setFormData({ ...formData, places: updated });
 
     if (value.trim()) {
-      const coords = await fetchLatLng(value);
-      if (coords) {
-        updated[index].latitude = coords.latitude;
-        updated[index].longitude = coords.longitude;
-        setFormData({ ...formData, places: updated });
+      try {
+        const coords = await fetchLocationFromMapbox(value);
+        if (coords) {
+          updated[index].latitude = coords.latitude;
+          updated[index].longitude = coords.longitude;
+          setFormData({ ...formData, places: updated });
+        }
+      } 
+      catch(err) 
+      {
+        console.log(err)
       }
     }
   };
 
-
-  const handleImageFileChange = async (
-    index: number,
-    file: File | null
-  ) => {
+  const handleImageFileChange = async (index: number, file: File | null) => {
     if (!file) return;
     const url = await uploadImageToCloudinary(file);
-    if (url) {
+    if (url) 
+    {
       const updated = [...formData.images];
       updated[index].image_url = url;
       setFormData({ ...formData, images: updated });
-    } else {
+    } 
+    else 
+    {
       alert("Image upload failed. Try again.");
     }
   };
 
- 
   const normalizeNumberFields = (arr: any[], fields: string[]) =>
     arr.map((item) => {
       const converted = { ...item };
@@ -181,141 +171,199 @@ export default function PostForm() {
       return converted;
     });
 
+
+  const cleanEmptyEntries = (arr: any[] = []) =>
+    arr.filter((item) => item &&
+        Object.values(item).some((val) => val !== null && val !== undefined && val !== "")
+  );
+
+
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // currently hardcoded
-    const user_id = "510b9fec-1fbe-4c94-a91b-3f9eaf83afd1";
+    const isEntryComplete = (entry: any, requiredFields: string[]) => {
+      return requiredFields.every(
+        (field) => entry[field] !== undefined && entry[field] !== null && entry[field] !== ""
+      );
+    };
+
+    const sectionsToValidate: { [key: string]: string[] } = {
+      accommodations: [
+        "accommodation_type",
+        "accommodation_name",
+        "latitude",
+        "longitude",
+        "cost",
+        "rating",
+        "review",
+      ],
+      transports: ["transport_type", "transport_name", "cost", "rating", "review"],
+      places: ["place_name", "latitude", "longitude", "cost", "rating", "review"],
+      foods: ["food_name", "cost", "rating", "review"],
+      images: ["image_url", "caption"],
+    };
+
+    for (const [section, requiredFields] of Object.entries(sectionsToValidate)) {
+      const entries = (formData as any)[section] ?? [];
+
+      for (let i = 0; i < entries.length; i++) {
+        const entry = entries[i];
+        const anyFieldFilled = Object.values(entry).some((val) => val !== undefined && val !== null && val !== "");
+
+        if (anyFieldFilled && !isEntryComplete(entry, requiredFields)) {
+          alert(
+            `Please complete all fields for the ${section.slice(0, -1)} #${i + 1} or remove it.`
+          );
+          return; 
+        }
+      }
+    }
+
+    const user_id = localStorage.getItem("user_id")
 
     const payload = {
       ...formData,
       user_id,
       total_cost: Number(formData.total_cost),
-      accommodations: normalizeNumberFields(formData.accommodations, [
+      accommodations: normalizeNumberFields( cleanEmptyEntries(formData.accommodations), [
         "latitude",
         "longitude",
         "cost",
         "rating",
       ]),
-      transports: normalizeNumberFields(formData.transports, ["cost", "rating"]),
-      places: normalizeNumberFields(formData.places, [
+      transports: normalizeNumberFields(cleanEmptyEntries(formData.transports), ["cost", "rating"]),
+      places: normalizeNumberFields(cleanEmptyEntries(formData.places), [
         "latitude",
         "longitude",
         "cost",
         "rating",
       ]),
-      foods: normalizeNumberFields(formData.foods, ["cost", "rating"]),
-     
+        foods: normalizeNumberFields(cleanEmptyEntries(formData.foods), ["cost", "rating"]),
     };
 
-    console.log("Payload being sent to backend:", payload);
-
     try {
-      const result = await createPost(payload);
-      console.log("Post created:", result);
-      navigate("/home");
-    } catch (err) {
-      console.error("Post creation failed:", err);
-      alert("Post creation failed. Check console for details.");
+      await onSubmit(payload);
+    } 
+    catch (err) 
+    {
+      console.error("Form submission failed:", err);
+      alert("Form submission failed. Check console for details.");
     }
   };
 
   const renderSection = (sectionName: string, fields: string[]) => (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">{sectionName}</h3>
-      {(formData as any)[sectionName.toLowerCase()].map(
-        (item: any, idx: number) => (
-          <div key={idx} className="border p-3 rounded bg-gray-50">
-            {fields.map((field) => {
-              // For accommodations: use special handler on accommodation_name field
-              if (
-                sectionName === "Accommodations" &&
-                field === "accommodation_name"
-              ) {
-                return (
-                  <input
-                    key={field}
-                    type="text"
-                    placeholder="Accommodation Name"
-                    value={item[field] || ""}
-                    onChange={(e) =>
-                      handleAccommodationNameChange(idx, e.target.value)
-                    }
-                    className="w-full border p-2 mb-2"
-                    name={field}
-                  />
-                );
-              }
-
-              // For places: special handler on place_name
-              if (sectionName === "Places" && field === "place_name") {
-                return (
-                  <input
-                    key={field}
-                    type="text"
-                    placeholder="Place Name"
-                    value={item[field] || ""}
-                    onChange={(e) => handlePlaceNameChange(idx, e.target.value)}
-                    className="w-full border p-2 mb-2"
-                    name={field}
-                  />
-                );
-              }
-
-              // For images, handle file upload input for image_url field
-              if (sectionName === "Images" && field === "image_url") {
-                return (
-                  <div key={field} className="mb-2">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0] ?? null;
-                        await handleImageFileChange(idx, file);
-                      }}
-                      className="w-full border p-2 mb-1"
-                    />
-                    {item.image_url && (
-                      <img
-                        src={item.image_url}
-                        alt="Uploaded"
-                        className="w-32 h-20 object-cover rounded"
-                      />
-                    )}
-                  </div>
-                );
-              }
-
-              // Default input for all other fields
+      {((formData as any)[sectionName.toLowerCase()] ?? []).map((item: any, index: number) => (
+        <div key={index} className="border p-3 rounded bg-gray-50">
+          {fields.map((field) => {
+            if (sectionName === "Accommodations" && field === "accommodation_name") {
               return (
                 <input
                   key={field}
                   type="text"
-                  placeholder={field.replace(/_/g, " ")}
+                  placeholder="Accommodation Name"
                   value={item[field] || ""}
-                  onChange={(e) =>
-                    handleNestedChange(
-                      sectionName.toLowerCase(),
-                      idx,
-                      field,
-                      e.target.value
-                    )
-                  }
+                  onChange={(e) => handleAccommodationNameChange(index, e.target.value)}
                   className="w-full border p-2 mb-2"
                   name={field}
+                  required
                 />
               );
-            })}
-            <button
-              type="button"
-              className="text-red-500 underline"
-              onClick={() => handleRemoveSectionItem(sectionName.toLowerCase(), idx)}
-            >
-              Remove
-            </button>
-          </div>
-        )
-      )}
+              
+            }
+
+            if (sectionName === "Places" && field === "place_name") {
+              return (
+                <input
+                  key={field}
+                  type="text"
+                  placeholder="Place Name"
+                  value={item[field] || ""}
+                  onChange={(e) => handlePlaceNameChange(index, e.target.value)}
+                  className="w-full border p-2 mb-2"
+                  name={field}
+                  required
+                /> 
+               
+                // <div key={field} className="flex gap-2 mb-2">
+                //   <input
+                //     type="text"
+                //     placeholder="Place Name"
+                //     value={item[field] || ""}
+                //     onChange={(e) => handlePlaceNameChange(index, e.target.value)}
+                //     className="flex-1 border p-2"
+                //     name={field}
+                //     required
+                //   />
+                //   <button
+                //     type="button"
+                //     onClick={() =>
+                //       navigate("/map", {
+                //         state: {
+                //           section: "places",
+                //           index,
+                //           returnTo: location.pathname,
+                //         },
+                //       })
+                //     }
+                //     className="text-blue-600 underline whitespace-nowrap"
+                //   >
+                //     Select on Map
+                //   </button>
+                // </div>
+              
+              );
+            }
+
+            if (sectionName === "Images" && field === "image_url") {
+              return (
+                <div key={field} className="mb-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      await handleImageFileChange(index, file);
+                    }}
+                    className="w-full border p-2 mb-1"
+                  />
+                  {item.image_url && (
+                    <img
+                      src={item.image_url}
+                      alt="Uploaded"
+                      className="w-32 h-20 object-cover rounded"
+                    />
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <input
+                key={field}
+                type="text"
+                placeholder={field.replace(/_/g, " ")}
+                value={item[field] || ""}
+                onChange={(e) =>
+                  handleNestedChange(sectionName.toLowerCase(), index, field, e.target.value)
+                }
+                className="w-full border p-2 mb-2"
+                name={field}
+                required
+              />
+            );
+          })}
+          <button
+            type="button"
+            className="text-red-500 underline"
+            onClick={() => handleRemoveSectionItem(sectionName.toLowerCase(), index)}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
       <button
         type="button"
         className="text-blue-600 underline"
@@ -326,12 +374,16 @@ export default function PostForm() {
     </div>
   );
 
+
+
   return (
     <form
       onSubmit={handleSubmit}
       className="max-w-4xl mx-auto p-4 bg-white rounded shadow space-y-6"
     >
-      <h2 className="text-2xl font-bold">Create Travel Post</h2>
+      <h2 className="text-2xl font-bold">
+        {initialData ? "Edit Travel Post" : "Create Travel Post"}
+      </h2>
 
       <input
         name="title"
@@ -339,6 +391,7 @@ export default function PostForm() {
         onChange={handleChange}
         placeholder="Title"
         className="w-full border p-2"
+        required
       />
       <textarea
         name="description"
@@ -346,6 +399,7 @@ export default function PostForm() {
         onChange={handleChange}
         placeholder="Description"
         className="w-full border p-2 h-24"
+        required
       />
       <input
         name="total_cost"
@@ -354,6 +408,7 @@ export default function PostForm() {
         onChange={handleChange}
         placeholder="Total Cost (e.g. 500.00)"
         className="w-full border p-2"
+        required
       />
       <input
         name="duration"
@@ -361,6 +416,7 @@ export default function PostForm() {
         onChange={handleChange}
         placeholder="Duration"
         className="w-full border p-2"
+        required
       />
 
       <select
@@ -368,6 +424,7 @@ export default function PostForm() {
         value={formData.effort}
         onChange={handleChange}
         className="w-full border p-2"
+        required
       >
         <option value="">Select Effort</option>
         {effortLevels.map((level) => (
@@ -388,6 +445,7 @@ export default function PostForm() {
           })
         }
         className="w-full border p-2 h-40"
+        required
       >
         {categories.map((cat) => (
           <option key={cat} value={cat}>
@@ -424,7 +482,7 @@ export default function PostForm() {
       {renderSection("Images", ["image_url", "caption"])}
 
       <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-        Publish Post
+        {initialData ? "Update Post" : "Publish Post"}
       </button>
     </form>
   );

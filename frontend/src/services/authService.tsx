@@ -1,5 +1,6 @@
-import api from '../api'
+import api from '../api';
 import type { authResponse, signin, signup } from '../types/auth';
+import { getAuthConfig } from '../utils/authConfig';
 
 
 export const userSignup = async (data: signup): Promise<authResponse> => {
@@ -26,19 +27,13 @@ export const userSignin = async (data: signin): Promise<authResponse> => {
 
 export const userSignout = async (): Promise<{ message: string }> => {
     try {
-        const accessToken = localStorage.getItem("accessToken")
-        const config = {
-            headers: {
-            Authorization: `Bearer ${accessToken}`,
-            },
-        };
-        const response = await api.post('/auth/signout', null, config)
+        const response = await api.post('/auth/signout', null, getAuthConfig());
        
         return response.data;
     } 
     catch (error: any) {
         console.error("Error during signout:", error);
-        throw new Error(error?.response?.data?.message || "Signout failed. Please try again")
+        throw new Error(error?.response?.data?.message || "Signout failed. Please try again");
     }
 };
 
@@ -46,13 +41,13 @@ export const userSignout = async (): Promise<{ message: string }> => {
 // this is not working due to cors in the backend. will fix it in later iteration.
 export const refreshAccessToken = async (): Promise<{ accessToken: string }> => {
     try {
-        const response = await api.post('/auth/refresh-token', null, { withCredentials: true})
-        localStorage.setItem("accessToken",response.data.accessToken)
+        const response = await api.post('/auth/refresh-token', null, { withCredentials: true});
+        localStorage.setItem("accessToken",response.data.accessToken);
        
         return response.data;
     } 
     catch (error: any) {
         console.error("Error during signout:", error);
-        throw new Error(error?.response?.data?.message || "Signout failed. Please try again")
+        throw new Error(error?.response?.data?.message || "Refresh Access Token failed. Please try again");
     }
 };

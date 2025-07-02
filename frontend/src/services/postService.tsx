@@ -1,24 +1,11 @@
 import type { Post, getPost } from "../types/post";
-import api from '../api'
+import api from '../api';
 import { useAuth } from "../hooks/useAuth";
+import { getAuthConfig } from "../utils/authConfig";
 
-export const createPost = async (
-    post: Omit<Post, "post_id" | "createdAt">
-    ): Promise<Post> => {
-
+export const createPost = async (post: Omit<Post, "post_id" | "createdAt">): Promise<boolean> => {
     try {
-        // const { accessToken } = useAuth() 
-        const accessToken = localStorage.getItem("accessToken")
-    // const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIzIiwiZW1haWwiOiJ0aGlyZEBnbWFpbC5jb20iLCJyb2xlIjoidHJhdmVsbGVyIiwiaWF0IjoxNzUxMzU2NzIxLCJleHAiOjE3NTEzNjAzMjF9.MZlGeWyixM87bDYKnitlwyC08B_yFCganVNS44zIcGw"
-    
-        const config = {
-            headers: {
-            Authorization: `Bearer ${accessToken}`,
-            },
-        };
-        
-        console.log('token', config.headers.Authorization)
-        const response = await api.post("/posts", post, config);
+        const response = await api.post("/posts", post, getAuthConfig());
         return response.data;
     }
     catch(error: any) 
@@ -31,26 +18,90 @@ export const createPost = async (
 
 
 export const getAllPosts = async (): Promise<getPost[]> => {
-    
     try {
         const accessToken = localStorage.getItem("accessToken")
-        // const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIzIiwiZW1haWwiOiJ0aGlyZEBnbWFpbC5jb20iLCJyb2xlIjoidHJhdmVsbGVyIiwiaWF0IjoxNzUxMzU2NzIxLCJleHAiOjE3NTEzNjAzMjF9.MZlGeWyixM87bDYKnitlwyC08B_yFCganVNS44zIcGw"
-        const page=1, limit=5
+        const page=1, limit=10
         const config = {
             headers: {
-            Authorization: `Bearer ${accessToken}`,
+                Authorization: `Bearer ${accessToken}`,
             },
             params: {
-            page,
-            limit,
-        },
+                page,
+                limit,
+            },
         };
         const response = await api.get("/posts", config);
         
         return response.data; 
     } 
-    catch (error: any) {
+    catch (error: any) 
+    {
         console.error("Error fetching posts:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch posts");
+    }
+};
+
+
+export const getPostByPostId = async (post_id: string): Promise<getPost> => {
+    try {
+        const response = await api.get(`/posts/${post_id}`, getAuthConfig());
+        return response.data;
+    }
+    catch (error: any) 
+    {
+        console.error("Error fetching post:", error);
+        throw new Error(error?.response?.data?.message || "Failed to fetch post");
+    }
+};
+
+
+export const updatePost = async (post_id: string, data: getPost): Promise<string> => {
+    try {
+        const response = await api.patch(`/posts/${post_id}`, data, getAuthConfig())
+        return response.data
+    }
+    catch (error: any) 
+    {
+        console.error("Error updating post:", error);
+        throw new Error(error?.response?.data?.message || "Failed to update post");
+    }
+    
+};
+
+
+export const deletePost = async (post_id: string): Promise<void> => {
+    try {
+        await api.delete(`/posts/${post_id}`, getAuthConfig())
+    }
+    catch (error: any) 
+    {
+        console.error("Error deleting posts:", error);
+        throw new Error(error?.response?.data?.message || "Failed to delete posts");
+    }
+}
+
+
+// i will try to use one function instead of these two later
+export const togglePostlike = async (postId: string): Promise<string> => {
+    try {
+        const response = await api.post(`/posts/${postId}/like`, {}, getAuthConfig());
+        return response.data;
+    }
+    catch (error: any) 
+    {
+        console.error("Error liking posts:", error);
+        throw new Error(error?.response?.data?.message || "Failed to like posts");
+    }
+};
+
+export const unlikePost = async (postId: string) => {
+    try {
+        const response = await api.post(`/posts/${postId}/like`, {}, getAuthConfig());
+        return response.data;
+    }
+    catch (error: any) 
+    {
+        console.error("Error liking posts:", error);
+        throw new Error(error?.response?.data?.message || "Failed to unlike posts");
     }
 };

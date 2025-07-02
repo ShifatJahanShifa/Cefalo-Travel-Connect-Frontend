@@ -17,7 +17,7 @@ export default function SignupPage() {
         try {
             const res = await userSignup(form);
 
-            signin(res.username, res.user_id, res.accessToken, res.refreshToken);
+            signin(res.username, res.user_id, res.role, res.accessToken, res.refreshToken);
             navigate("/home");
         } 
         catch (err) {
@@ -36,6 +36,7 @@ export default function SignupPage() {
                     value={form.username}
                     onChange={handleChange}
                     className="w-full border p-2 mb-4 rounded"
+                    required
                 />
                 <input
                     name="email"
@@ -44,6 +45,7 @@ export default function SignupPage() {
                     value={form.email}
                     onChange={handleChange}
                     className="w-full border p-2 mb-4 rounded"
+                    required
                 />
                 <input
                     name="password"
@@ -52,6 +54,7 @@ export default function SignupPage() {
                     value={form.password}
                     onChange={handleChange}
                     className="w-full border p-2 mb-6 rounded"
+                    required
                 />
                 <button type="submit" className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">
                     Create Account

@@ -5,15 +5,22 @@ import { useEffect } from "react";
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const { signout } = useAuth()
-    const { username, isLoading } = useAuth()
+    const { signout } = useAuth();
+    const { username, isLoading } = useAuth();
 
     console.log(username)
 
-    const handleLogout = () => {
-        userSignout()
-        signout()
-        navigate("/");
+    const handleLogout = async () => {
+        try {
+            await userSignout()
+            signout()
+            navigate("/");
+        }
+        catch (error) 
+        {
+            alert("Signout failed");
+            console.error(error);
+        }
     };
 
     // for debugging purpose
@@ -25,7 +32,7 @@ export default function Navbar() {
 
     return (
         <nav className="flex flex-row justify-between items-center gap-6 px-6 py-3 bg-blue-10 text-black">
-            <div className="space-x-4">
+            <div className="space-x-2">
                 {username ? (
                     <div className="flex flex-row justify-between gap-70 items-center">
                         <div>
@@ -34,7 +41,10 @@ export default function Navbar() {
                         <div className="flex flex-row justify-end gap-10 items-center"> 
                             <Link to="/home">Home</Link>
                             <Link to="/create-post">Create Post</Link>
-                            <button onClick={handleLogout}>
+                            <Link to="/wishlists">Wishlists</Link>
+                            <Link to='/dashboard'>Dashboard</Link>
+                            <Link to='/profile'>{username}</Link>
+                            <button onClick={handleLogout} className="bg-blue-400 py-3 px-3 rounded-2xl">
                                 Logout
                             </button>
                         </div>

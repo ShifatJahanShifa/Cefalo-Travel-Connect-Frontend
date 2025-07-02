@@ -1,5 +1,5 @@
 export interface Post {
-    post_id: string
+    post_id: string;
     user_id: string;
     title: string;
     description: string;
@@ -41,7 +41,7 @@ export interface Post {
         image_url: string;
         caption: string;
     }[];
-    createdAt: string
+    createdAt: string;
 }
 
 
