@@ -1,10 +1,11 @@
-import type { getPost } from "../../types/posts/post";
+import type { getPost } from "../../types/post";
 
 interface Props {
     post: getPost;
 }
 
 export default function PostCard({ post }: Props) {
+  console.log(post)
     return (
         <div className="border rounded p-4 shadow mb-6 bg-white">
             <h2 className="text-2xl font-bold mb-1">{post.title}</h2>
@@ -54,11 +55,11 @@ export default function PostCard({ post }: Props) {
               </div>
             )}
 
-            {post.foods && post.foods?.length > 0 && (
+            {post.postFoods && post.postFoods?.length > 0 && (
               <div className="mb-3">
                 <h3 className="font-semibold text-lg">Foods</h3>
                 <ul className="list-disc pl-5">
-                  {post.foods.map((f, i) => (
+                  {post.postFoods.map((f, i) => (
                     <li key={i}>
                       {f.food_name} (Cost: ${f.cost}, Rating: {f.rating})
                     </li>

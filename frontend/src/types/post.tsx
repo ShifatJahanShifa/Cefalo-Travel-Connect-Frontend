@@ -63,7 +63,7 @@ export type getPost = {
     transports?: any[];
     places?: any[];
     restaurants?: any[];
-    foods?: any[];
+    postFoods?: any[];
     images?: { image_url: string; caption?: string }[];
 };
 

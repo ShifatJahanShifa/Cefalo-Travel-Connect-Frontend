@@ -84,9 +84,7 @@ export default function PostForm() {
     images: [] as any[],
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -215,7 +213,7 @@ export default function PostForm() {
     try {
       const result = await createPost(payload);
       console.log("Post created:", result);
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       console.error("Post creation failed:", err);
       alert("Post creation failed. Check console for details.");
