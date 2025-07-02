@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUserByUsername, updateUser } from "../services/userService";
 import { useAuth } from "../hooks/useAuth";
+import { uploadImageToCloudinary } from "../utils/cloudinary";
 
 export default function ProfilePage() {
   const { username } = useAuth();
@@ -27,32 +28,29 @@ export default function ProfilePage() {
     fetchUser();
   }, [username]);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const file = e.target.files?.[0];
-    // if (file) {
-    //   const reader = new FileReader();
-    //   reader.onloadend = async () => {
-    //     const base64 = reader.result?.toString();
-    //     setProfilePic(base64 || null);
-    //     try {
-    //       const updated = await updateUser(username!, { profilePicUrl: base64 });
-    //       setUser(updated);
-    //     } catch (err) {
-    //       console.error("Failed to upload profile pic", err);
-    //     }
-    //   };
-    //   reader.readAsDataURL(file);
-    // }
-  };
+   
+const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    try {
+      const imageUrl = await uploadImageToCloudinary(file);
+      setProfilePic(imageUrl); // Update UI
+      const updated = await updateUser(username!, { profile_picture_url: imageUrl });
+      setUser(updated); // Update user state
+    } catch (err) {
+      console.error("Failed to upload profile pic", err);
+    }
+  }
+};
 
   const handleRemoveImage = async () => {
-    // setProfilePic(null);
-    // try {
-    //   const updated = await updateUser(username!, { profilePicUrl: "" });
-    //   setUser(updated);
-    // } catch (err) {
-    //   console.error("Failed to remove image", err);
-    // }
+    setProfilePic(null);
+    try {
+        const updated = await updateUser(username!, { profile_picture_url: "" });
+        setUser(updated);
+    } catch (err) {
+        console.error("Failed to remove image", err);
+    }
   };
 
   const handleSaveBio = async () => {
@@ -77,10 +75,10 @@ export default function ProfilePage() {
           className="w-28 h-28 rounded-full object-cover border"
         />
         <div className="flex flex-col space-y-2">
-          <label className="cursor-pointer text-blue-600 underline">
+          {!profilePic && (<label className="cursor-pointer text-blue-600 underline">
             Add Picture
             <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-          </label>
+          </label>)}
           {profilePic && (
             <button onClick={handleRemoveImage} className="text-red-500 underline">
               Remove Picture

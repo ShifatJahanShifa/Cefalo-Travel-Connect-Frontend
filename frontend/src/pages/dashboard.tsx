@@ -1,4 +1,3 @@
-// pages/Dashboard.tsx
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { getPostsByUsername } from "../services/userService";

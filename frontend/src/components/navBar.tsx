@@ -43,7 +43,7 @@ export default function Navbar() {
                             <Link to="/create-post">Create Post</Link>
                             <Link to="/wishlists">Wishlists</Link>
                             <Link to='/dashboard'>Dashboard</Link>
-                            <Link to='/profile'>{username}</Link>
+                            <Link to='/profile'>Profile</Link>
                             <button onClick={handleLogout} className="bg-blue-400 py-3 px-3 rounded-2xl">
                                 Logout
                             </button>
