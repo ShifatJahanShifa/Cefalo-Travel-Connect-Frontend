@@ -1,4 +1,5 @@
 export interface wishlist {
+    wishlist_id?: string
     place_name: string,
     type: string,
     title: string

@@ -61,7 +61,7 @@ export default function ViewPost() {
     <div className="p-6 max-w-4xl mx-auto">
       <PostCard 
         post={post} 
-        onDelete={() => navigate("/home")}  // Redirect to home after deletion
+        onDelete={() => navigate("/home")}  
       />
     </div>
   );

@@ -13,6 +13,11 @@ import ProfilePage from '../pages/profile';
 import Dashboard from '../pages/dashboard';
 import WishlistPage from '../pages/wishlist';
 import MapSelectorPage from '../pages/map';
+import CreateWishlistPage from '../pages/craeteWishlist';
+import WishlistMapSelector from '../pages/wishlistMap';
+import ViewWishlistPage from '../pages/viewWishlist';
+import EditWishlistPage from '../pages/editWishlist';
+import ViewSingleWishlist from '../pages/singleWishlistView';
 
 
 export default function AppRoutes() {
@@ -31,7 +36,12 @@ export default function AppRoutes() {
             <Route path='/posts/:post_id/view' element={<PrivateRoute> < ViewPost/></PrivateRoute>} />
             <Route path='/dashboard' element={<PrivateRoute>< Dashboard/></PrivateRoute>} />
             <Route path='/wishlists' element={<PrivateRoute>< WishlistPage/></PrivateRoute>} />
+            <Route path='/wishlists/create' element={<PrivateRoute><  CreateWishlistPage/></PrivateRoute>} />
             <Route path='/map' element={<PrivateRoute>< MapSelectorPage/></PrivateRoute>} />
+            <Route path='/wishlist/map' element={<PrivateRoute> < WishlistMapSelector/></PrivateRoute>} />
+            <Route path='/wishlist/:wishlist_id/view' element={<PrivateRoute>< ViewWishlistPage/></PrivateRoute>} /> 
+            <Route path='/wishlist/:wishlist_id/edit' element={<PrivateRoute>< EditWishlistPage/></PrivateRoute>} />
+            <Route path='/shared/wishlist/:wishlist_id' element={< ViewSingleWishlist/ >}  />
         </Routes>
     );
 }
