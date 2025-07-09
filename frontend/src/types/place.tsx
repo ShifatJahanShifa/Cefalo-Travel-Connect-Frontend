@@ -12,6 +12,7 @@ export type getPlace = {
 }
 
 export type placeUpdation = { 
+    place_id?: string
     place_name?: string 
     latitude?: number
     longitude?: number

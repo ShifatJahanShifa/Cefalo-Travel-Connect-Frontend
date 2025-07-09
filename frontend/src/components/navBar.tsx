@@ -31,26 +31,28 @@ export default function Navbar() {
     }, [isLoading, username]);
 
     return (
-        <nav className="flex flex-row justify-between items-center gap-6 px-6 py-3 bg-blue-10 text-black">
+        <nav className="flex flex-row justify-between space items-center gap-6 px-6 py-3 bg-blue-10 text-black">
             <div className="space-x-2">
                 {username ? (
                     <div className="flex flex-row justify-between gap-70 items-center">
                         <div>
                             <h1 className="text-xl font-bold text-blue-900">Cefalo Travel Connect</h1>
                         </div>
-                        <div className="flex flex-row justify-end gap-10 items-center"> 
-                            <Link to="/home">Home</Link>
-                            <Link to="/create-post">Create Post</Link>
-                            <Link to="/wishlists">Wishlists</Link>
-                            <Link to='/dashboard'>Dashboard</Link>
-                            <Link to='/profile'>Profile</Link>
+                        <div className="flex flex-row justify-between gap-10 items-center"> 
+                            <Link to="/home" className="hover:text-blue-700">Home</Link>
+                            <Link to="/create-post" className="hover:text-blue-700">Create Post</Link>
+                            <Link to="/wishlists" className="hover:text-blue-700">Wishlists</Link>
+                            <Link to='/travelplans' className="hover:text-blue-700">TravelPlans</Link>
+                            <Link to='/nearby' className="hover:text-blue-700">Nearby Services</Link>
+                            <Link to='/dashboard' className="hover:text-blue-700">Dashboard</Link>
+                            <Link to='/profile' className="hover:text-blue-700">Profile</Link>
                             <button onClick={handleLogout} className="bg-blue-400 py-3 px-3 rounded-2xl">
                                 Logout
                             </button>
                         </div>
                     </div>
                 ) : (
-                    <h1 className="text-xl font-bold text-black">Cefalo Travel Connect</h1>
+                    <h1 className="text-xl font-bold text-black text-center">Cefalo Travel Connect</h1>
                 )}
             </div>
         </nav>

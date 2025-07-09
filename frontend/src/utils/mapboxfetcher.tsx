@@ -29,26 +29,3 @@ export const fetchLocationFromMapbox = async (place: string): Promise<{ latitude
         return null;
     }
 };
-
-
-// this is by using nominator.openstreetmap
-// async function fetchLocationFromMapbox(placeName: string) {
-//   if (!placeName) return null;
-//   const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-//     placeName
-//   )}&format=json&limit=1`;
-
-//   try {
-//     const res = await fetch(url);
-//     const data = await res.json();
-//     if (data && data.length > 0) {
-//       return {
-//         latitude: parseFloat(data[0].lat),
-//         longitude: parseFloat(data[0].lon),
-//       };
-//     }
-//   } catch (error) {
-//     console.error("Geocoding failed:", error);
-//   }
-//   return null;
-// }

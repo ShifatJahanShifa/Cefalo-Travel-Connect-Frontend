@@ -7,7 +7,6 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from './contexts/authContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
-  // why strictmode? need to know 
   <StrictMode>
     <AuthProvider>
       <BrowserRouter>

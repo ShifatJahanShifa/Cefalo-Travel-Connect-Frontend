@@ -1,5 +1,5 @@
-import PostForm from "../components/posts/postForm";
-import { createPost } from "../services/postService";
+import PostForm from "../../components/posts/postForm";
+import { createPost } from "../../services/postService";
 import { useNavigate } from "react-router-dom";
 
 export default function CreatePostPage() {
@@ -7,7 +7,7 @@ export default function CreatePostPage() {
 
   const handleCreate = async (formData: any) => {
     try {
-      const result = await createPost(formData);
+      await createPost(formData);
       navigate("/home");
     } 
     catch (err) {

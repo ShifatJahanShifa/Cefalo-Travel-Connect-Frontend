@@ -14,4 +14,5 @@ export type updateUserInfo = {
     bio?: string;
     role?: string;
     hashed_password?: string;
+    phone_no?: string
 }

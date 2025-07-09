@@ -26,3 +26,16 @@ export interface getWishlistType  {
     note: string 
     is_public: boolean 
 }
+
+
+export interface groupedUsers  {
+    wishlist_id : string
+    title: string
+    note: string 
+    theme: string
+    type: string 
+    user_id: string 
+    username: string 
+    email: string 
+    profile_picture_url: string 
+}
