@@ -24,12 +24,8 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
     }
   );
   
-  // accommodations: [{ accommodation_name: "", accommodation_type: "", latitude: 0, longitude: 0 }],
-  // transports: [{ transport_type: "", transport_name: "" }],
-  // places: [{ place_name: "", latitude: 0, longitude: 0 }],
 
   useEffect(() => {
-    // Restore form from localStorage if available
     const saved = localStorage.getItem("travelFormData");
     if (saved) {
       setFormData(JSON.parse(saved));
@@ -403,8 +399,6 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
         </div>
 
 
-
-      {/* Transports */}
       <div>
         <div className="grid grid-cols-1 mb-2">
           <label className="font-bold text-lg mb-2 border-b pb-1 border-blue-700">Transports</label>
@@ -450,7 +444,6 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
       </div>
 
 
-      {/* Submit Button */}
       <div className="pt-4">
         <button
           type="submit"

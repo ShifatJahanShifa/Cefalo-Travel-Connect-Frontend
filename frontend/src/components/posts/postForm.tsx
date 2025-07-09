@@ -167,8 +167,8 @@ export default function PostForm({ initialData, onSubmit }: Props) {
 
   function formatLabel(field: string): string {
     return field
-      .replace(/[_-]/g, ' ')                     // Replace underscores or hyphens with space
-      .replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()); // Capitalize each word
+      .replace(/[_-]/g, ' ')                    
+      .replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()); 
   }
 
 

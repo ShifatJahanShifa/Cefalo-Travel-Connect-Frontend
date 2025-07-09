@@ -17,7 +17,7 @@ export default function AlertWindow() {
     );
   }, []);
 
-  // Polling logic
+
   useEffect(() => {
     if (latitude && longitude) {
       const interval = setInterval(async () => {

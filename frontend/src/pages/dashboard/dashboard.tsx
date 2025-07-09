@@ -26,13 +26,12 @@ export default function Dashboard() {
     const fetchData = async () => {
       setLoading(true);
 
-      // Initialize placeholders
       let postData = [];
       let wishlistData = [];
       let placeData = [];
       let travelplansData = [];
 
-      // Fetch posts
+
       try {
         postData = await getPostsByUsername(username!);
         setPosts(postData);
@@ -40,7 +39,7 @@ export default function Dashboard() {
         console.error("Failed to fetch posts:", err);
       }
 
-      // Fetch wishlists
+    
       try {
         wishlistData = await getWishlistsByUsername(username!);
         setWishlists(wishlistData);
@@ -48,7 +47,7 @@ export default function Dashboard() {
         console.error("Failed to fetch wishlists:", err);
       }
 
-      // Fetch places
+  
       try {
         placeData = await getPlaces();
         setPlaces(placeData);
@@ -56,7 +55,7 @@ export default function Dashboard() {
         console.error("Failed to fetch places:", err);
       }
 
-      // Fetch travel plans
+   
       try {
         travelplansData = await getTravelPlansByUsername(username!);
         setTravelPlans(travelplansData);
@@ -75,7 +74,7 @@ export default function Dashboard() {
     <div className="max-w-5xl mx-auto p-6 space-y-8">
       <h1 className="text-3xl font-bold text-gray-800">📊 Your Dashboard</h1>
 
-      {/* Stats Summary */}
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded shadow">
           <h3 className="text-sm text-gray-500">Total Posts</h3>
@@ -91,7 +90,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Tab Switcher */}
+     
       <div className="flex gap-4 border-b pb-2">
         {["posts", "wishlists", "travelplans"].map((tab) => (
           <button
@@ -110,7 +109,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Content Section */}
+    
       <div className="mt-4 mb-5">
         {loading ? (
           <p className="text-gray-500 italic">Loading {selectedTab}...</p>

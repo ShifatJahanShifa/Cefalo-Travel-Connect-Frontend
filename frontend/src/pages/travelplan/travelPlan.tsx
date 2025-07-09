@@ -44,7 +44,7 @@ export default function TravelPlanListPage() {
         </div>
       </div>
 
-      {/* Travel Plan Cards */}
+      
       <div className="space-y-6">
         {plans.length > 0 ? (
           plans.map((plan) => (

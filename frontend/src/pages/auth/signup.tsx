@@ -80,7 +80,7 @@ export default function SignupPage() {
           Join Cefalo Travel Connect and start exploring today.
         </p>
 
-        {/* Username */}
+    
         <div>
           <label className="block mb-1 font-medium">Username</label>
           <input
@@ -97,7 +97,7 @@ export default function SignupPage() {
           )}
         </div>
 
-        {/* Email */}
+   
         <div>
           <label className="block mb-1 font-medium">Email</label>
           <input
@@ -115,7 +115,6 @@ export default function SignupPage() {
           )}
         </div>
 
-        {/* Password with Eye Toggle */}
         <div>
           <label className="block mb-1 font-medium">Password</label>
           <div className="relative">

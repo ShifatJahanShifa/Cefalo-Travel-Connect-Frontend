@@ -19,7 +19,7 @@ export default function TravelPlanInvitationsPage() {
           console.log('look',data)
           data = data.filter(d => d.read === false)
           setInvitations(data);
-        //   setLoading(true)
+     
       } catch (err) {
         console.error("Failed to fetch invitations", err);
       } finally {

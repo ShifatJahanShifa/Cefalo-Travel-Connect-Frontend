@@ -1,49 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { getAllPosts, deletePost } from "../services/postService";
-// import type { getPost } from "../types/post";
-// import PostCard from "../components/posts/postCard";
-
-// export default function HomePage() {
-//   const [posts, setPosts] = useState<getPost[]>([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     (async () => {
-//       try {
-//         const data = await getAllPosts();
-//         setPosts(data);
-//       } 
-//       catch (err) 
-//       {
-//         console.error("Failed to load posts:", err);
-//       } 
-//       finally {
-//         setLoading(false);
-//       }
-//     })();
-//   }, []);
-
-//   const handleDelete = (postId: string) => {
-//     setPosts((prevPosts) => prevPosts.filter((post) => post.post_id !== postId));
-//   };
-
-//   return (
-//     <div className="max-w-5xl mx-auto p-4">
-//       <h1 className="text-3xl font-bold mb-6">All Travel Posts</h1>
-//         {loading ? (
-//             <p>Loading posts...</p>
-//         ) : posts.length === 0 ? (
-//             <p>No posts found.</p>
-//         ) : (
-//         posts.map((post) => (
-//             <PostCard key={post.post_id} post={post} onDelete={handleDelete} />
-//         ))
-//       )}
-//     </div>
-//   );
-// }
-
-
 import { useEffect, useState } from "react";
 import { getAllPosts, deletePost } from "../../services/postService";
 import { getFilteredPosts } from "../../services/postService"; // import new filter fn
@@ -54,7 +8,7 @@ export default function HomePage() {
   const [posts, setPosts] = useState<getPost[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Filter states
+ 
   const [transportType, setTransportType] = useState("");
   const [placeName, setPlaceName] = useState("");
   const [accommodationType, setAccommodationType] = useState("");
@@ -106,7 +60,6 @@ export default function HomePage() {
     <div className="max-w-5xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">All Travel Posts</h1>
 
-      {/* Filter Form */}
       <form
         onSubmit={handleFilter}
         className="bg-slate-100 rounded-xl shadow p-4 mb-6 space-y-4 border"
@@ -152,7 +105,7 @@ export default function HomePage() {
         </div>
       </form>
 
-      {/* Posts Section */}
+    
       {loading ? (
         <p>Loading posts...</p>
       ) : posts.length === 0 ? (

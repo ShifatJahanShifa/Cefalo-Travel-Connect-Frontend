@@ -32,7 +32,7 @@ export default function ViewSingleWishlist() {
       </div>
 
       <div className="flex flex-col gap-3 text-gray-800">
-        {/* currently i am not getting place name from backend response. so in the next iteration, i will add it. */}
+
         <div>
           <span className="font-semibold">Latitude:</span> {wishlist.place_latitude}
         </div>

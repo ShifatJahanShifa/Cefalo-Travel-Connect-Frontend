@@ -62,7 +62,7 @@ export default function SigninPage() {
         <h2 className="text-3xl font-bold text-center text-blue-700 mb-2">Welcome Back</h2>
         <p className="text-center text-gray-600 mb-4">Login to your account</p>
 
-        {/* Email Field */}
+     
         <div>
           <label className="block mb-1 font-medium">Email</label>
           <input
@@ -82,7 +82,7 @@ export default function SigninPage() {
           )}
         </div>
 
-        {/* Password Field with Eye Icon */}
+    
         <div>
           <label className="block mb-1 font-medium">Password</label>
           <div className="relative">

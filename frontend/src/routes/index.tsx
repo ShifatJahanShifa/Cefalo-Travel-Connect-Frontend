@@ -1,8 +1,7 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import HomePage from '../pages/post/home'
 import CreatePostPage from '../pages/post/createPost';
-import LandingPage from '../pages/landingPage';
-import Navbar from '../components/navBar';
+import LandingPage from '../pages/LandingPage'
 import SignupPage from '../pages/auth/signup';
 import SigninPage from '../pages/auth/signin';
 import PrivateRoute from './privateRoute';
@@ -29,8 +28,8 @@ import PostMapSelector from '../pages/post/postMap';
 import { useAuth } from '../hooks/useAuth';
 
 export default function AppRoutes() {
-    const { role } = useAuth()
-    const isAdmin = role === 'admin'
+    const { role } = useAuth();
+    const isAdmin = role === 'admin';
     return (
         <Routes>
             <Route path='/' element={<LandingPage/>} />
@@ -38,12 +37,11 @@ export default function AppRoutes() {
             <Route path='/signin' element={<SigninPage /> } /> 
 
             <Route path="/home" element={<PrivateRoute><HomePage /> </PrivateRoute>} />
-            <Route path='/create-post' element={<PrivateRoute><CreatePostPage/></PrivateRoute>} /> 
+            <Route path='/posts/create' element={<PrivateRoute><CreatePostPage/></PrivateRoute>} /> 
             <Route path='/wishlists' element={<PrivateRoute>< WishlistPage/></PrivateRoute>} />
             <Route path='/travelplans' element={<PrivateRoute>< TravelPlanListPage /></PrivateRoute>} />
             <Route path='/nearby' element={<PrivateRoute>< SeeNearbyPage/></PrivateRoute>} />
             <Route path='/profile' element={<PrivateRoute>< ProfilePage /></PrivateRoute>} />
-            
             <Route path="/dashboard" element={<PrivateRoute> {isAdmin ? <AdminDashboard /> : <Dashboard />} </PrivateRoute>}/>
 
             <Route path='/post/map' element={<PrivateRoute> < PostMapSelector/></PrivateRoute>} />

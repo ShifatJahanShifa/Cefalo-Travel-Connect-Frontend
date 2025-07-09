@@ -40,7 +40,7 @@ export default function Navbar() {
                         </div>
                         <div className="flex flex-row justify-between gap-10 items-center"> 
                             <Link to="/home" className="hover:text-blue-700">Home</Link>
-                            <Link to="/create-post" className="hover:text-blue-700">Create Post</Link>
+                            <Link to="/posts/create" className="hover:text-blue-700">Create Post</Link>
                             <Link to="/wishlists" className="hover:text-blue-700">Wishlists</Link>
                             <Link to='/travelplans' className="hover:text-blue-700">TravelPlans</Link>
                             <Link to='/nearby' className="hover:text-blue-700">Nearby Services</Link>

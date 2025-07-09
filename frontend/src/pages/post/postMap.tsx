@@ -4,7 +4,6 @@ import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX;
 
 function FlyToMarker({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
@@ -85,11 +84,11 @@ export default function PostMapSelector() {
       </div>
 
    
-      <MapContainer
-        center={[23.8103, 90.4125]}
-        zoom={6}
-        style={{ height: "100%", width: "100%" }}
-      >
+        <MapContainer
+            center={[23.8103, 90.4125]}
+            zoom={6}
+            style={{ height: "100%", width: "100%" }}
+        >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"

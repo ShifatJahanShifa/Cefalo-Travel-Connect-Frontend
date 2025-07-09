@@ -36,7 +36,8 @@ export default function WishlistMapSelector() {
         setSelected({ lat, lng });
         setPlaceName(firstResult.display_name);
       } 
-      else {
+      else 
+      {
         alert("No results found. Manually add place name and latitude longitude");
       }
     } 
