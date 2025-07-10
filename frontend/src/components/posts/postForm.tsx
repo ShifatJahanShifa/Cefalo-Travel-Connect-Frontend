@@ -32,11 +32,22 @@ export default function PostForm({ initialData, onSubmit }: Props) {
     foods: [] as any[],
     images: [] as any[],
   });
-
+  
   const location = useLocation();
   const navigate = useNavigate();
+  
+ 
+  
+  useEffect(() => {
 
-
+  const saved = localStorage.getItem("postFormData");
+    if (saved) {
+      setFormData(JSON.parse(saved));
+    }
+  }, []);
+    
+   
+    
   useEffect(() => {
     const state = location.state;
     if (!state || !state.mapType || !state.place_name) return;
@@ -48,11 +59,11 @@ export default function PostForm({ initialData, onSubmit }: Props) {
     setFormData((prev: any) => {
       if (state.mapType === "place") {
         if (alreadyExists(prev.places || [], state.lat, state.lng)) return prev;
-       
+      
 
         const data = [...(prev.places || [])];
 
- 
+
         if (state.index !== undefined && data[state.index]) {
           data[state.index] = {
             ...data[state.index],
@@ -70,7 +81,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
 
       if (state.mapType === "accommodation") {
         if (alreadyExists(prev.accommodations || [], state.lat, state.lng)) return prev;
-       
+      
         const data = [...(prev.accommodations || [])];
 
         if (state.index !== undefined && data[state.index]) {
@@ -80,49 +91,29 @@ export default function PostForm({ initialData, onSubmit }: Props) {
             latitude: state.lat,
             longitude: state.lng,
           };
-
+          console.log('a', state, 'b', data)
           return {
             ...prev,
             accommodations: data,
           };
         }
-      }
 
+        
+      }
+  
       return prev;
     });
 
     window.history.replaceState({}, document.title);
+    localStorage.removeItem('postFormData')
   }, [location.state]);
+  
 
-  
-    useEffect(() => {
-
-      const saved = localStorage.getItem("postFormData");
-      if (saved) {
-        setFormData(JSON.parse(saved));
-      }
-    }, []);
-  
-  
-    useEffect(() => {
-      const saved = localStorage.getItem("postFormData");
-    
-      if (saved) {
-        setFormData(JSON.parse(saved));
-        localStorage.removeItem("postFormData"); 
-      } 
-      else if (initialData) {
-        setFormData(initialData);
-      }
-    }, [initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleAddSectionItem = (section: string, newItem: any) => {
-    setFormData({ ...formData, [section]: [...(formData as any)[section], newItem] });
-  };
 
   const handleRemoveSectionItem = (section: string, index: number) => {
     const updated = [...(formData as any)[section]];
@@ -170,6 +161,16 @@ export default function PostForm({ initialData, onSubmit }: Props) {
       .replace(/[_-]/g, ' ')                    
       .replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()); 
   }
+
+
+  const handleAddSectionItem = (section: string, newItem: any) => {
+    const updated = [...(formData as any)[section], newItem];
+    const newFormData = { ...formData, [section]: updated };
+
+    setFormData(newFormData);
+    localStorage.setItem("postFormData", JSON.stringify(newFormData)); 
+  };
+
 
 
   const normalizeNumberFields = (arr: any[], fields: string[]) =>
@@ -291,7 +292,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
 
             if (sectionName === "Accommodations" && field === "accommodation_name") {
               return (
-                <div>
+                <div key={field} >
                   <label className="block font-medium text-gray-700 mb-1">Accommodation Name<span className="text-red-500">*</span></label>
                   <div className="flex gap-2">
                     <input
@@ -327,7 +328,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
             }
             if (sectionName === "Places" && field === "place_name") {
               return (
-                <div>
+                <div key={field} >
                   <label className="block font-medium text-gray-700 mb-1">Place Name<span className="text-red-500">*</span></label>
                   <div className="flex gap-2"> 
                 <input
@@ -593,3 +594,4 @@ export default function PostForm({ initialData, onSubmit }: Props) {
     </form>
   );
 }
+

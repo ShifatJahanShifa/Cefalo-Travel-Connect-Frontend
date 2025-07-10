@@ -32,20 +32,6 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
     }
   }, []);
 
-
-  useEffect(() => {
-    const saved = localStorage.getItem("travelFormData");
-  
-    if (saved) {
-      setFormData(JSON.parse(saved));
-      localStorage.removeItem("travelFormData"); 
-    } 
-    else if (initialData) {
-      setFormData(initialData);
-    }
-  }, [initialData]);
-
-
     
   useEffect(() => {
     const state = location.state;
@@ -99,7 +85,7 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
 
       return prev;
     });
-
+    localStorage.removeItem('travelFormData')
     window.history.replaceState({}, document.title);
   }, [location.state]);
 
@@ -118,6 +104,7 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
     try {
       if (initialData) {
         await updateTravelPlan(initialData.travel_plan_id!, formData);
+        localStorage.removeItem('travelFormData')
       } 
       else {
         await createTravelPlan(formData);

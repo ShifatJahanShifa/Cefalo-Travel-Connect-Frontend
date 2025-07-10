@@ -23,11 +23,12 @@ export default function EditPostPage() {
 
   const handleUpdate = async (formData: any) => {
     try {
-
-        console.log('post updated form data', formData)
+      console.log('update', formData)
       await updatePost(post_id!, formData);
+      localStorage.removeItem('postFormData')
       navigate("/home");
-    } catch (err) {
+    } 
+    catch (err) {
       console.error("Post update failed:", err);
       alert("Post update failed. Check console for details.");
     }

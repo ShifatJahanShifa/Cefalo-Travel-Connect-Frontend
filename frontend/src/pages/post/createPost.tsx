@@ -8,6 +8,7 @@ export default function CreatePostPage() {
   const handleCreate = async (formData: any) => {
     try {
       await createPost(formData);
+      localStorage.removeItem('postFormData')
       navigate("/home");
     } 
     catch (err) {
