@@ -10,19 +10,18 @@ let isRefreshing = false;
 let failedQueue: any[] = [];
 
 const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach(prom => {
+  failedQueue.forEach(item => {
     if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
+      item.reject(error);
+    } 
+    else {
+      item.resolve(token);
     }
   });
   failedQueue = [];
 };
 
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
+api.interceptors.response.use((response) => response, async (error) => {
     const originalRequest = error.config;
 
     const authEndpoints = ["/auth/signin", "/auth/signup"];
@@ -30,7 +29,7 @@ api.interceptors.response.use(
       originalRequest.url?.includes(endpoint)
     );
 
-    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+    if (error.response?.status === 401 && !isAuthEndpoint) {
       originalRequest._retry = true;
 
       if (!isRefreshing) {
@@ -41,17 +40,18 @@ api.interceptors.response.use(
           const newAccessToken = res.accessToken;
 
           localStorage.setItem("accessToken", newAccessToken);
-          api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
-
+          originalRequest.headers["Authorization"] = "Bearer " + newAccessToken
           processQueue(null, newAccessToken);
 
           return api(originalRequest);
         } 
-        catch (refreshError) {
+        catch (refreshError) 
+        {
           processQueue(refreshError, null);
           return Promise.reject(refreshError);
         } 
-        finally {
+        finally 
+        {
           isRefreshing = false;
         }
       }

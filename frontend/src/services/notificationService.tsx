@@ -2,28 +2,28 @@ import api from "../api";
 import type { notification } from "../types/notification";
 import { getAuthConfig } from "../utils/authConfig";
 
-export const createNotiification = async (data: notification): Promise<notification> => {
+export const createNotification = async (data: notification): Promise<notification> => {
     try {
         const response = await api.post(`/notifications`, data, getAuthConfig())
         return response.data
     }
     catch (error: any) 
     {
-        console.error("Error fetching places:", error);
-        throw new Error(error?.response?.data?.message || "Failed to fetch places");
+        console.error("Error creating notification:", error);
+        throw new Error(error?.response?.data?.message || "Failed to create notification");
     }
 }
 
 
-export const getNotiificationsByNotificationId = async (notification_id: string): Promise<notification[]> => {
+export const getNotificationsByNotificationId = async (notification_id: string): Promise<notification[]> => {
     try {
         const response = await api.get(`/notifications/${notification_id}`, getAuthConfig())
         return response.data
     }
     catch (error: any) 
     {
-        console.error("Error fetching places:", error);
-        throw new Error(error?.response?.data?.message || "Failed to fetch places");
+        console.error("Error fetching notification:", error);
+        throw new Error(error?.response?.data?.message || "Failed to fetch notification");
     }
 }
 
@@ -35,8 +35,8 @@ export const deleteNotification = async (notification_id: string): Promise<void>
     }
     catch (error: any) 
     {
-        console.error("Error fetching places:", error);
-        throw new Error(error?.response?.data?.message || "Failed to fetch places");
+        console.error("Error deleting notification:", error);
+        throw new Error(error?.response?.data?.message || "Failed to delete notification");
     }
 }
 

@@ -9,8 +9,8 @@ export const createProximity = async (data: proximity): Promise<proximity> => {
     }
     catch (error: any)
     {
-        console.error("Error creating proximities:", error);
-        throw new Error(error?.response?.data?.message || "Failed to create proximities");
+        console.error("Error creating proximity:", error);
+        throw new Error(error?.response?.data?.message || "Failed to create proximity");
     }
 }
 
@@ -48,13 +48,13 @@ export const updateProximity = async (data: proximity): Promise<proximity> => {
     }
     catch (error: any)
     {
-        console.error("Error updating proximities:", error);
-        throw new Error(error?.response?.data?.message || "Failed to update proximities");
+        console.error("Error updating proximity:", error);
+        throw new Error(error?.response?.data?.message || "Failed to update proximity");
     }
 }
 
 
-// i need to fix http method in the next iteration. for now i cannot do this
+// i need to fix http method in the next iteration. 
 export const deleteProximity = async (data: proximity): Promise<proximity> => {
     try {
         const response = await api.delete(`/proximity`, { ...getAuthConfig(), data})
@@ -62,8 +62,8 @@ export const deleteProximity = async (data: proximity): Promise<proximity> => {
     }
     catch (error: any)
     {
-        console.error("Error creating proximities:", error);
-        throw new Error(error?.response?.data?.message || "Failed to create proximities");
+        console.error("Error deleting proximity:", error);
+        throw new Error(error?.response?.data?.message || "Failed to delete proximity");
     }
 }
 

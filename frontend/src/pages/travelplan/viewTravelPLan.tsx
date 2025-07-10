@@ -8,7 +8,7 @@ import {
   updateTravelPlanMemberRole,
 } from "../../services/travelPlanService";
 import { getUserByUsername } from "../../services/userService";
-import { createNotiification } from "../../services/notificationService";
+import { createNotification } from "../../services/notificationService";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function ViewTravelPlan() {
@@ -66,7 +66,7 @@ export default function ViewTravelPlan() {
         reference_id: travel_plan_id!,
       };
 
-      const notificationResponse = await createNotiification(notificationPayload);
+      const notificationResponse = await createNotification(notificationPayload);
 
       if (notificationResponse) {
         setAddMemberStatus(`Invitation sent to ${user.username}`);

@@ -40,7 +40,6 @@ export const userSignout = async (): Promise<{ message: string }> => {
 export const refreshAccessToken = async (): Promise<{ accessToken: string }> => {
     try {
         const response = await api.get('/auth/refresh-token', { withCredentials: true});
-        localStorage.setItem("accessToken",response.data.accessToken);
         return response.data;
     } 
     catch (error: any) {

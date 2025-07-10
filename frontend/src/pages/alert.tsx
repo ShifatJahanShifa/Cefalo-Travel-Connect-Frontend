@@ -1,3 +1,5 @@
+// This alert logic is incomplete. I will look at this in the next iteration.
+
 import { useEffect, useState } from "react";
 import { checkProximities } from "../services/proximityService";
 

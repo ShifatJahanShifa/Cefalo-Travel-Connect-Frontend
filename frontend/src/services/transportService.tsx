@@ -24,8 +24,8 @@ export const createTransport = async (data: transportCreation): Promise<getTrans
     }   
     catch (error: any) 
     {
-        console.error("Error creating transports:", error);
-        throw new Error(error?.response?.data?.message || "Failed to create transports");
+        console.error("Error creating transport:", error);
+        throw new Error(error?.response?.data?.message || "Failed to create transport");
     }
 }
 
@@ -36,7 +36,7 @@ export const updateTransport = async (data: transportUpdation): Promise<getTrans
     }   
     catch (error: any) 
     {
-        console.error("Error updating transports:", error);
-        throw new Error(error?.response?.data?.message || "Failed to update transports");
+        console.error("Error updating transport:", error);
+        throw new Error(error?.response?.data?.message || "Failed to update transport");
     }
 }

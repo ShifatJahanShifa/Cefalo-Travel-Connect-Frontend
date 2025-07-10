@@ -60,6 +60,6 @@ export const updateAccommodation = async (data: accommodationUpdation): Promise<
     catch(error: any) 
     {
         console.error("Error updating accpommodations:", error);
-        throw new Error(error?.response?.data?.message || "Failed to upadte accommodations");
+        throw new Error(error?.response?.data?.message || "Failed to update accommodations");
     }
 }

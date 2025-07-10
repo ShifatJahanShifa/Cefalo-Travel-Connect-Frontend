@@ -117,7 +117,7 @@ export const getRavelPlanComments = async(travel_plan_id: string): Promise<trave
     catch(error: any) 
     {
         console.error("Error fetching travel plan comments:", error);
-        throw new Error(error?.response?.data?.message || "Failed to fetch travel plan  comments");
+        throw new Error(error?.response?.data?.message || "Failed to fetch travel plan comments");
     }
 }
 
@@ -129,7 +129,7 @@ export const createTravelPlanComment = async(travel_plan_id: string, data: trave
     }
     catch(error: any) 
     {
-        console.error("Error deleting travel plans:", error);
-        throw new Error(error?.response?.data?.message || "Failed to delete travel plans");
+        console.error("Error creating travel plan comment:", error);
+        throw new Error(error?.response?.data?.message || "Failed to create travel plan comment");
     }
 }

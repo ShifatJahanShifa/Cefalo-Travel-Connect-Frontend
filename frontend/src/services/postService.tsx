@@ -9,8 +9,8 @@ export const createPost = async (post: Omit<Post, "post_id" | "createdAt">): Pro
     }
     catch(error: any) 
     {
-        console.error("Error creating posts:", error);
-        throw new Error(error?.response?.data?.message || "Failed to create posts");
+        console.error("Error creating post:", error);
+        throw new Error(error?.response?.data?.message || "Failed to create post");
     }
 };
 
@@ -73,8 +73,8 @@ export const deletePost = async (post_id: string): Promise<void> => {
     }
     catch (error: any) 
     {
-        console.error("Error deleting posts:", error);
-        throw new Error(error?.response?.data?.message || "Failed to delete posts");
+        console.error("Error deleting post:", error);
+        throw new Error(error?.response?.data?.message || "Failed to delete post");
     }
 }
 
@@ -86,8 +86,8 @@ export const togglePostlike = async (postId: string): Promise<string> => {
     }
     catch (error: any) 
     {
-        console.error("Error liking posts:", error);
-        throw new Error(error?.response?.data?.message || "Failed to like posts");
+        console.error("Error liking post:", error);
+        throw new Error(error?.response?.data?.message || "Failed to like post");
     }
 };
 
@@ -104,10 +104,11 @@ export const getFilteredPosts = async (filters: {transport_type?: string; place_
       params: filters, 
     };
 
-    const response = await api.get("/posts/search", config); // backend endpoint
+    const response = await api.get("/posts/search", config);
     return response.data;
-  } catch (error: any) {
-    console.error("Error fetching posts:", error);
-    throw new Error(error?.response?.data?.message || "Failed to fetch posts");
-  }
+    } 
+    catch (error: any) {
+        console.error("Error fetching posts:", error);
+        throw new Error(error?.response?.data?.message || "Failed to fetch posts");
+    }
 };

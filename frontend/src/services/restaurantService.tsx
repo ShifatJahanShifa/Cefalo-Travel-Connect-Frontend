@@ -45,8 +45,8 @@ export const createRestaurant = async (data: restaurantCreation): Promise<restau
     }   
     catch (error: any) 
     {
-        console.error("Error creating restaurants:", error);
-        throw new Error(error?.response?.data?.message || "Failed to create restaurants");
+        console.error("Error creating restaurant:", error);
+        throw new Error(error?.response?.data?.message || "Failed to create restaurant");
     }
 }
 
@@ -57,7 +57,7 @@ export const updateRestaurant = async (data: restaurantUpdation): Promise<restau
     }   
     catch (error: any) 
     {
-        console.error("Error fetching restaurants:", error);
-        throw new Error(error?.response?.data?.message || "Failed to fetch restaurants");
+        console.error("Error updating restaurant:", error);
+        throw new Error(error?.response?.data?.message || "Failed to update restaurant");
     }
 }

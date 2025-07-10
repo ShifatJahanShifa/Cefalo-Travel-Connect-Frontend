@@ -21,8 +21,8 @@ export const createPlace = async (data: placeCreation): Promise<placeDTOType> =>
     }
     catch (error: any) 
     {
-        console.error("Error creating places:", error);
-        throw new Error(error?.response?.data?.message || "Failed to create places");
+        console.error("Error creating place:", error);
+        throw new Error(error?.response?.data?.message || "Failed to create place");
     }
 }
 
@@ -35,8 +35,8 @@ export const updatePlace = async (data: placeUpdation): Promise<placeDTOType> =>
     }
     catch (error: any) 
     {
-        console.error("Error updating places:", error);
-        throw new Error(error?.response?.data?.message || "Failed to update places");
+        console.error("Error updating place:", error);
+        throw new Error(error?.response?.data?.message || "Failed to update place");
     }
 }
 
