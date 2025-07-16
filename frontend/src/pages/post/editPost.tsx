@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import PostForm from "../../components/posts/postForm";
 import { getPostByPostId, updatePost } from "../../services/postService";
 import type { getPost } from "../../types/post";
+import { toast } from "react-toastify";
+
 
 export default function EditPostPage() {
   const { post_id } = useParams();
@@ -23,9 +25,10 @@ export default function EditPostPage() {
 
   const handleUpdate = async (formData: any) => {
     try {
-      console.log('update', formData)
+      
       await updatePost(post_id!, formData);
       localStorage.removeItem('postFormData')
+      toast.success("successfully updated post")
       navigate("/home");
     } 
     catch (err) {
@@ -37,7 +40,7 @@ export default function EditPostPage() {
   if (!initialData) return <p>Loading post...</p>;
 
   return (
-    <div className="p-4">
+    <div>
       <PostForm initialData={initialData} onSubmit={handleUpdate} />
     </div>
   );

@@ -4,8 +4,8 @@ import { getAuthConfig } from "../utils/authConfig";
 
 export const createNotification = async (data: notification): Promise<notification> => {
     try {
-        const response = await api.post(`/notifications`, data, getAuthConfig())
-        return response.data
+        const response = await api.post(`/notifications`, data, getAuthConfig());
+        return response.data;
     }
     catch (error: any) 
     {
@@ -17,8 +17,8 @@ export const createNotification = async (data: notification): Promise<notificati
 
 export const getNotificationsByNotificationId = async (notification_id: string): Promise<notification[]> => {
     try {
-        const response = await api.get(`/notifications/${notification_id}`, getAuthConfig())
-        return response.data
+        const response = await api.get(`/notifications/${notification_id}`, getAuthConfig());
+        return response.data;
     }
     catch (error: any) 
     {
@@ -30,8 +30,8 @@ export const getNotificationsByNotificationId = async (notification_id: string):
 
 export const deleteNotification = async (notification_id: string): Promise<void> => {
     try {
-        const response = await api.delete(`/notifications/${notification_id}`, getAuthConfig())
-        return response.data
+        const response = await api.delete(`/notifications/${notification_id}`, getAuthConfig());
+        return response.data;
     }
     catch (error: any) 
     {
@@ -43,9 +43,9 @@ export const deleteNotification = async (notification_id: string): Promise<void>
 
 export const markNotificationAsRead = async (notification_id: string): Promise<notification> => {
     try {
-        const response = await api.patch(`/notifications/${notification_id}`, {}, getAuthConfig())
-        console.log(response.data)
-        return response.data
+        const response = await api.patch(`/notifications/${notification_id}`, {}, getAuthConfig());
+       
+        return response.data;
     }
     catch (error: any) 
     {

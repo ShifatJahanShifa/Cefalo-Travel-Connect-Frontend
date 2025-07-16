@@ -21,20 +21,11 @@ useEffect(() => {
   fetchData();
 }, [travel_plan_id]);
 
-const handleUpdate = async (formData: any) => {
-  try {
-    await updateTravelPlan(travel_plan_id!, initialData!)
-    navigate("/home");
-  } catch (err) {
-    console.error("Post update failed:", err);
-    alert("Post update failed. Check console for details.");
-  }
-};
 
-if (!initialData) return <p>Loading post...</p>;
+if (!initialData) return <p>Loading travel plan...</p>;
 
 return (
-    <div className="p-4">
+    <div>
       <TravelPlanForm initialData={initialData} />
     </div>
   );

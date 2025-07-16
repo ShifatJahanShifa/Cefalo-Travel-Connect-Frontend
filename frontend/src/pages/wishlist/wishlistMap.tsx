@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { toast } from "react-toastify";
 
 
 function FlyToMarker({ lat, lng }: { lat: number; lng: number }) {
@@ -38,7 +39,7 @@ export default function WishlistMapSelector() {
       } 
       else 
       {
-        alert("No results found. Manually add place name and latitude longitude");
+        toast.error("No results found. Manually add place name and latitude longitude");
       }
     } 
     catch (error) 
@@ -64,7 +65,7 @@ export default function WishlistMapSelector() {
 
 
   return (
-    <div className="h-screen w-full relative">
+    <div className="h-screen w-full absolute">
       
       <div className="absolute z-[1000] left-20 top-5 bg-white rounded shadow p-3 w-[90%] max-w-md flex gap-2">
         <input

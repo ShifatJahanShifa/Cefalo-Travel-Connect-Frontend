@@ -49,6 +49,8 @@ export default function SignupPage() {
     try {
       const res = await userSignup(form);
       signin(res.username, res.user_id, res.role, res.accessToken, res.refreshToken);
+      toast.success("Welcome Explorer!");
+      
       navigate("/home");
     } 
     catch (err: any) {
@@ -79,10 +81,10 @@ export default function SignupPage() {
         <p className="text-center text-gray-600 mb-4">
           Join Cefalo Travel Connect and start exploring today.
         </p>
-
+        <p><span className="text-red-500">*</span> indicates required field</p>
     
         <div>
-          <label className="block mb-1 font-medium">Username</label>
+          <label className="block mb-1 font-medium">Username<span className="text-red-500">*</span></label>
           <input
             name="username"
             placeholder="Enter username"
@@ -99,7 +101,7 @@ export default function SignupPage() {
 
    
         <div>
-          <label className="block mb-1 font-medium">Email</label>
+          <label className="block mb-1 font-medium">Email<span className="text-red-500">*</span></label>
           <input
             name="email"
             type="email"
@@ -116,7 +118,7 @@ export default function SignupPage() {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Password</label>
+          <label className="block mb-1 font-medium">Password<span className="text-red-500">*</span></label>
           <div className="relative">
             <input
               name="password"

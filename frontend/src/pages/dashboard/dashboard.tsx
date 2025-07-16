@@ -71,7 +71,7 @@ export default function Dashboard() {
 
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8">
+    <div className="max-w-5xl mx-auto p-6 space-y-8 mt-10">
       <h1 className="text-3xl font-bold text-gray-800">📊 Your Dashboard</h1>
 
 

@@ -5,8 +5,8 @@ import { getAuthConfig } from "../utils/authConfig";
 
 export const createWishlist = async (data: wishlist): Promise<getWishlistType> => {
     try {
-        const response = await api.post(`/wishlists`, data, getAuthConfig()) 
-        return response.data
+        const response = await api.post(`/wishlists`, data, getAuthConfig());
+        return response.data;
     }
     catch (error: any) 
     {
@@ -17,8 +17,8 @@ export const createWishlist = async (data: wishlist): Promise<getWishlistType> =
 
 export const getWishlists = async (): Promise<getWishlistType[]> => {
     try {
-        const response = await api.get(`/wishlists`, getAuthConfig()) 
-        return response.data
+        const response = await api.get(`/wishlists`, getAuthConfig());
+        return response.data;
     }
     catch (error: any) 
     {
@@ -30,8 +30,8 @@ export const getWishlists = async (): Promise<getWishlistType[]> => {
 
 export const updateWishlist = async (wishlist_id: string, data: wishlist): Promise<void> => {
     try {
-        const response = await api.patch(`/wishlists/${wishlist_id}`, data, getAuthConfig()) 
-        return response.data
+        const response = await api.patch(`/wishlists/${wishlist_id}`, data, getAuthConfig()) ;
+        return response.data;
     }
     catch (error: any) 
     {
@@ -43,7 +43,7 @@ export const updateWishlist = async (wishlist_id: string, data: wishlist): Promi
 
 export const deleteWishlist = async (wishlist_id: string): Promise<void> => {
     try {
-        await api.delete(`/wishlists/${wishlist_id}`, getAuthConfig()) 
+        await api.delete(`/wishlists/${wishlist_id}`, getAuthConfig()) ;
     }
     catch (error: any) 
     {
@@ -55,8 +55,8 @@ export const deleteWishlist = async (wishlist_id: string): Promise<void> => {
 
 export const getWishlistById = async (wishlist_id: string): Promise<getWishlistType> => {
     try {
-        const response = await api.get(`/wishlists/${wishlist_id}`, getAuthConfig())
-        return response.data
+        const response = await api.get(`/wishlists/${wishlist_id}`, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {
@@ -72,8 +72,8 @@ export const getInterestedUsers = async (theme: string): Promise<groupedUsers[]>
             theme: theme
         }
   
-        const response = await api.post(`/wishlists/grouped/users`, data, getAuthConfig()) 
-        return response.data
+        const response = await api.post(`/wishlists/grouped/users`, data, getAuthConfig());
+        return response.data;
     }
     catch (error: any) 
     {
@@ -85,8 +85,8 @@ export const getInterestedUsers = async (theme: string): Promise<groupedUsers[]>
 
 export const toggleVisibility = async (wishlist_id: string): Promise<string> => {
     try {
-        const response = await api.patch(`/wishlists/${wishlist_id}/visibility`, {}, getAuthConfig()) 
-        return response.data
+        const response = await api.patch(`/wishlists/${wishlist_id}/visibility`, {}, getAuthConfig());
+        return response.data;
     }
     catch (error: any) 
     {

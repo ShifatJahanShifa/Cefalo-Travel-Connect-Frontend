@@ -4,6 +4,8 @@ import { useAuth } from "../hooks/useAuth";
 import { uploadImageToCloudinary } from "../utils/cloudinary";
 import { Camera, Save, X, User, Mail, Shield, Settings, Trash2, PhoneCall, CalendarDays } from "lucide-react";
 import type { updateUserInfo } from "../types/user";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
   const { username } = useAuth();
@@ -16,7 +18,7 @@ export default function ProfilePage() {
   const [newPassword, setNewPassword] = useState("");
   const [editingPhone, setEditingPhone] = useState(false);
   const [newPhone, setNewPhone] = useState("");
-
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -42,6 +44,7 @@ export default function ProfilePage() {
       try {
         const imageUrl = await uploadImageToCloudinary(file);
         setProfilePic(imageUrl);
+        toast.success("Successfully uploaded image")
         const updated = await updateUser(username!, { profile_picture_url: imageUrl });
         setUser(updated);
       } catch (err) {
@@ -77,9 +80,10 @@ export default function ProfilePage() {
         hashed_password: newPassword.trim()
       }
       await updateUser(username!, data);
-      alert("Password updated successfully.");
+      toast.success("Password updated successfully.");
       setShowPasswordField(false);
       setNewPassword("");
+      navigate('/signin')
     } catch (err) {
       console.error("Failed to update password", err);
       alert("Failed to update password.");
@@ -97,14 +101,14 @@ export default function ProfilePage() {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+    <div className="min-h-screen mt-10 bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
       <div className="max-w-3xl mx-auto bg-sky-100 rounded-2xl shadow-lg p-8 space-y-8">
         
         <div className="flex justify-center items-center flex-col space-x-6">
           <div className="relative">
             <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-blue-100">
               <img
-                src={profilePic || "https://via.placeholder.com/120"}
+                src={profilePic || `/images/none.jpg`}
                 alt="Profile"
                 className="w-full h-full object-cover border shadow-2xl"
               />

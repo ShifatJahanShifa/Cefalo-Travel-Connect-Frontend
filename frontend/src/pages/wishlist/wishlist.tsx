@@ -41,7 +41,7 @@ export default function WishlistPage() {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <div className="max-w-5xl mx-auto mt-10 p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Explore Wishlists</h1>
         <button
@@ -54,9 +54,9 @@ export default function WishlistPage() {
 
       <div>
         {wishlists.length === 0 ? (
-          <p>No wishlists found.</p>
+          <p><i>Loading</i></p>
         ) : (
-          <div className="space-y-4">
+          <div className="gap-5 grid grid-cols-2">
             {wishlists.map((wishlist) => (
               <WishlistCard key={wishlist.wishlist_id} wishlist={wishlist} allPlaces={places}/>
             ))}

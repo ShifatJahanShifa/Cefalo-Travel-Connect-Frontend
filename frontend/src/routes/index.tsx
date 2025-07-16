@@ -25,6 +25,8 @@ import SeeNearbyPage from '../pages/seeNearby';
 import TravelPlanInvitationsPage from '../pages/travelplan/travelPlanInvitation';
 import AdminDashboard from '../pages/dashboard/adminDashboard';
 import PostMapSelector from '../pages/post/postMap';
+import PlacesPage from '../pages/place';
+import NotificationsPage from '../pages/notification';
 import { useAuth } from '../hooks/useAuth';
 
 export default function AppRoutes() {
@@ -38,6 +40,7 @@ export default function AppRoutes() {
 
             <Route path="/home" element={<PrivateRoute><HomePage /> </PrivateRoute>} />
             <Route path='/posts/create' element={<PrivateRoute><CreatePostPage/></PrivateRoute>} /> 
+            <Route path='/places' element={<PrivateRoute>< PlacesPage/></PrivateRoute>} />
             <Route path='/wishlists' element={<PrivateRoute>< WishlistPage/></PrivateRoute>} />
             <Route path='/travelplans' element={<PrivateRoute>< TravelPlanListPage /></PrivateRoute>} />
             <Route path='/nearby' element={<PrivateRoute>< SeeNearbyPage/></PrivateRoute>} />
@@ -61,6 +64,8 @@ export default function AppRoutes() {
             <Route path='/travelplans/:travel_plan_id/view' element={<PrivateRoute>< ViewTravelPlan/></PrivateRoute>} /> 
             <Route path='/travelplans/:travel_plan_id/edit' element={<PrivateRoute>< TravelPlanEditPage/></PrivateRoute>} /> 
             <Route path='/travelplans/:travel_plan_id/comments' element={<PrivateRoute> < TravelPlanDiscussion/></PrivateRoute>} />
+
+            <Route path='/notifications' element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
         </Routes>
     );
 }

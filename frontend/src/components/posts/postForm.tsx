@@ -37,7 +37,8 @@ export default function PostForm({ initialData, onSubmit }: Props) {
   const navigate = useNavigate();
   
  
-  
+  const [uploadingImages, setUploadingImages] = useState<{ [index: number]: boolean }>({});
+
   useEffect(() => {
 
   const saved = localStorage.getItem("postFormData");
@@ -91,7 +92,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
             latitude: state.lat,
             longitude: state.lng,
           };
-          console.log('a', state, 'b', data)
+          
           return {
             ...prev,
             accommodations: data,
@@ -143,6 +144,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
 
   const handleImageFileChange = async (index: number, file: File | null) => {
     if (!file) return;
+     setUploadingImages((prev) => ({ ...prev, [index]: true })); 
     const url = await uploadImageToCloudinary(file);
     if (url) 
     {
@@ -154,6 +156,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
     {
       alert("Image upload failed. Try again.");
     }
+    setUploadingImages((prev) => ({ ...prev, [index]: false })); 
   };
 
   function formatLabel(field: string): string {
@@ -362,28 +365,64 @@ export default function PostForm({ initialData, onSubmit }: Props) {
                 </div>
               );
             }
+            // if (sectionName === "Images" && field === "image_url") {
+            //   return (
+            //     <div key={field} className="mb-2">
+            //       <input
+            //         type="file"
+            //         accept="image/*"
+            //         onChange={async (e) => {
+            //           const file = e.target.files?.[0] ?? null;
+            //           await handleImageFileChange(index, file);
+            //         }}
+            //         className="w-full border p-2 mb-1 rounded"
+            //       />
+            //       {item.image_url && (
+            //         <img
+            //           src={item.image_url}
+            //           alt="Uploaded"
+            //           className="w-32 h-20 object-cover rounded"
+            //         />
+            //       )}
+            //     </div>
+            //   );
+            // }
+
             if (sectionName === "Images" && field === "image_url") {
-              return (
-                <div key={field} className="mb-2">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0] ?? null;
-                      await handleImageFileChange(index, file);
-                    }}
-                    className="w-full border p-2 mb-1 rounded"
-                  />
-                  {item.image_url && (
-                    <img
-                      src={item.image_url}
-                      alt="Uploaded"
-                      className="w-32 h-20 object-cover rounded"
-                    />
-                  )}
-                </div>
-              );
-            }
+  return (
+    <div key={field} className="mb-2">
+      <input
+        type="file"
+        accept="image/*"
+        onChange={async (e) => {
+          const file = e.target.files?.[0] ?? null;
+          setUploadingImages((prev) => ({ ...prev, [index]: true }));
+          await handleImageFileChange(index, file);
+          setUploadingImages((prev) => ({ ...prev, [index]: false }));
+        }}
+        className="w-full border p-2 mb-1 rounded"
+      />
+
+      {/* 👇 Conditionally show preview or loader */}
+      {uploadingImages[index] ? (
+        <div className="w-32 h-20 flex items-center justify-center bg-gray-200 rounded animate-pulse">
+          <span className="text-xs text-gray-600">Uploading...</span>
+        </div>
+      ) : item.image_url ? (
+        <img
+          src={item.image_url}
+          alt="Uploaded"
+          className="w-32 h-20 object-cover rounded"
+        />
+      ) : (
+        <div className="w-32 h-20 flex items-center justify-center bg-gray-100 text-gray-400 border rounded">
+          No image
+        </div>
+      )}
+    </div>
+  );
+}
+
             if (field === "rating") {
               return (
                 <div key={field} className="mb-2">
@@ -489,7 +528,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
             }
 
             return (
-              <div> 
+              <div key={field}> 
                 <label className="block font-medium text-gray-700 mb-1">{formatLabel(field)}<span className="text-red-500">*</span></label>
                 <input
                   key={field}
@@ -524,7 +563,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-6 bg-sky-100  border border-sky-400 rounded shadow space-y-6">
+    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto mt-10 mb-10 rounded-2xl p-6 bg-sky-100  border border-sky-400 shadow space-y-6">
       <h2 className="text-2xl text-center font-bold text-blue-800">
         {initialData ? "Edit Travel Post" : "Create Travel Post"}
       </h2>
@@ -542,12 +581,12 @@ export default function PostForm({ initialData, onSubmit }: Props) {
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Total Cost<span className="text-red-500">*</span></label>
-        <input name="total_cost" type="number" value={formData.total_cost} onChange={handleChange} placeholder="Total Cost (e.g. 500.00)" className="w-full border p-2 rounded" required />
+        <input name="total_cost" type="number" value={formData.total_cost as 0} onChange={handleChange} placeholder="Total Cost (e.g. 500.00)" className="w-full border p-2 rounded" required />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Duration<span className="text-red-500">*</span></label>
-        <input name="duration" value={formData.duration} onChange={handleChange} placeholder="Duration" className="w-full border p-2 rounded" required />
+        <input name="duration" value={formData.duration} onChange={handleChange} placeholder="Duration (e.g., 1 day, 2 days ...)" className="w-full border p-2 rounded" required />
       </div>
 
       <div>

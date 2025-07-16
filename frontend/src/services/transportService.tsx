@@ -6,8 +6,8 @@ import type { getTransport, transportCreation, transportUpdation } from "../type
 
 export const getTransports = async (): Promise<getTransport[]> => {
     try {
-        const response = await api.get('/transports', getAuthConfig())
-        return response.data
+        const response = await api.get('/transports', getAuthConfig());
+        return response.data;
     }   
     catch (error: any) 
     {
@@ -19,8 +19,8 @@ export const getTransports = async (): Promise<getTransport[]> => {
 
 export const createTransport = async (data: transportCreation): Promise<getTransport> => {
     try {
-        const response = await api.post('/transports', data, getAuthConfig())
-        return response.data
+        const response = await api.post('/transports', data, getAuthConfig());
+        return response.data;
     }   
     catch (error: any) 
     {
@@ -31,8 +31,8 @@ export const createTransport = async (data: transportCreation): Promise<getTrans
 
 export const updateTransport = async (data: transportUpdation): Promise<getTransport> => {
     try {
-        const response = await api.patch(`/transports/${data.transport_id}`, data, getAuthConfig())
-        return response.data
+        const response = await api.patch(`/transports/${data.transport_id}`, data, getAuthConfig());
+        return response.data;
     }   
     catch (error: any) 
     {

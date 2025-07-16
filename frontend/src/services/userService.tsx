@@ -14,7 +14,7 @@ export const getUserByUsername = async (username: string): Promise<getUser> => {
     }
     catch (error: any) 
     {
-        console.error("Error getting user:", error);
+        // console.error("Error getting user:", error);
         throw new Error(error?.response?.data?.message || "Failed to get user");
     }
 };
@@ -28,7 +28,7 @@ export const updateUser = async (username: string, data: updateUserInfo): Promis
     }
     catch (error: any) 
     {
-        console.error("Error updating user:", error);
+        // console.error("Error updating user:", error);
         throw new Error(error?.response?.data?.message || "Failed to update user");
     }
 };
@@ -43,7 +43,7 @@ export const getPostsByUsername = async (username: string): Promise<getPost[]> =
     }
     catch (error: any) 
     {
-        console.error("Error getting user's posts:", error);
+        // console.error("Error getting user's posts:", error);
         throw new Error(error?.response?.data?.message || "Failed to get user's posts");
     }
 };
@@ -58,7 +58,7 @@ export const getWishlistsByUsername = async (username: string): Promise<getWishl
     }
     catch (error: any) 
     {
-        console.error("Error getting user's posts:", error);
+        // console.error("Error getting user's posts:", error);
         throw new Error(error?.response?.data?.message || "Failed to get user's posts");
     }
 };
@@ -74,7 +74,7 @@ export const getTravelPlansByUsername = async (username: string): Promise<travel
     }
     catch (error: any) 
     {
-        console.error("Error getting user's travelplans:", error);
+        // console.error("Error getting user's travelplans:", error);
         throw new Error(error?.response?.data?.message || "Failed to get user's travelplans");
     }
 };
@@ -89,7 +89,7 @@ export const getNotificationsByUsername = async (username: string): Promise<noti
     }
     catch (error: any) 
     {
-        console.error("Error getting user's notifications:", error);
+        // console.error("Error getting user's notifications:", error);
         throw new Error(error?.response?.data?.message || "Failed to get user's notifications");
     }
 };
@@ -103,7 +103,7 @@ export const deleteUser = async (username: string): Promise<void> => {
     }
     catch (error: any) 
     {
-        console.error("Error deleting user:", error);
+        // console.error("Error deleting user:", error);
         throw new Error(error?.response?.data?.message || "Failed to delete user");
     }
 };
@@ -111,8 +111,8 @@ export const deleteUser = async (username: string): Promise<void> => {
 
 export const getAllUsers = async (): Promise<getUser[]> => {
     try {
-        const accessToken = localStorage.getItem("accessToken")
-        const page=1, limit=50
+        const accessToken = localStorage.getItem("accessToken");
+        const page=1, limit=50;
         const config = {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -128,7 +128,7 @@ export const getAllUsers = async (): Promise<getUser[]> => {
     }
     catch (error: any) 
     {
-        console.error("Error fetching users:", error);
+        // console.error("Error fetching users:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch user");
     }
 };

@@ -5,6 +5,7 @@ import { addTravelPlanMember } from "../../services/travelPlanService";
 import { deleteNotification, markNotificationAsRead } from "../../services/notificationService";
 import NotificationCard from "../../components/notificationCard";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function TravelPlanInvitationsPage() {
   const { user_id, username } = useAuth();
@@ -16,8 +17,8 @@ export default function TravelPlanInvitationsPage() {
     const fetchInvitations = async () => {
       try {
           let data = await getNotificationsByUsername(username!);
-          console.log('look',data)
-          data = data.filter(d => d.read === false)
+         
+          data = data.filter(d => d.read === false && d.type === "travel_plan_invitation")
           setInvitations(data);
      
       } catch (err) {
@@ -26,7 +27,7 @@ export default function TravelPlanInvitationsPage() {
         setLoading(false);
       }
     };
-    console.log('a', invitations.length)
+   
     
     fetchInvitations();
   }, [username]);
@@ -40,9 +41,11 @@ export default function TravelPlanInvitationsPage() {
       };
       await addTravelPlanMember(notif.reference_id, payload);
       await markNotificationAsRead(notif.notification_id);
+      toast.success("Successfully accepted invitation")
       setInvitations((prev) =>
         prev.filter((n) => n.notification_id !== notif.notification_id)
       );
+
     } catch (err) {
       console.error("Failed to accept invitation", err);
     }

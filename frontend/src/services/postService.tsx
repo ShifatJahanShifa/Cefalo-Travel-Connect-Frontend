@@ -17,8 +17,8 @@ export const createPost = async (post: Omit<Post, "post_id" | "createdAt">): Pro
 
 export const getAllPosts = async (): Promise<getPost[]> => {
     try {
-        const accessToken = localStorage.getItem("accessToken")
-        const page=1, limit=50
+        const accessToken = localStorage.getItem("accessToken");
+        const page=1, limit=50;
         const config = {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -55,8 +55,8 @@ export const getPostByPostId = async (post_id: string): Promise<getPost> => {
 
 export const updatePost = async (post_id: string, data: getPost): Promise<string> => {
     try {
-        const response = await api.patch(`/posts/${post_id}`, data, getAuthConfig())
-        return response.data
+        const response = await api.patch(`/posts/${post_id}`, data, getAuthConfig());
+        return response.data;
     }
     catch (error: any) 
     {
@@ -69,7 +69,7 @@ export const updatePost = async (post_id: string, data: getPost): Promise<string
 
 export const deletePost = async (post_id: string): Promise<void> => {
     try {
-        await api.delete(`/posts/${post_id}`, getAuthConfig())
+        await api.delete(`/posts/${post_id}`, getAuthConfig());
     }
     catch (error: any) 
     {

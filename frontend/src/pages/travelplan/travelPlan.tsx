@@ -25,7 +25,7 @@ export default function TravelPlanListPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 mt-10">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <h2 className="text-3xl font-bold text-gray-800">Explore Travel Plans</h2>
         <div className="flex gap-3">
@@ -55,7 +55,7 @@ export default function TravelPlanListPage() {
             />
           ))
         ) : (
-          <p className="text-gray-600">No travel plans available. Create one to get started!</p>
+          <p className="text-gray-600"><i>Loading</i></p>
         )}
       </div>
     </div>

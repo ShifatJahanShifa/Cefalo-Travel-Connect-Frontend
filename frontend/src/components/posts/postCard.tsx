@@ -1,8 +1,11 @@
 import type { getPost } from "../../types/post";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { deletePost, togglePostlike } from "../../services/postService";
+import { getUserInfo } from "../../utils/userInfo";
+import type { getUser } from "../../types/user";
+import UserInfo from "../userInfo";
 
 interface Props {
   post: getPost;
@@ -52,9 +55,25 @@ export default function PostCard({ post, onDelete }: Props) {
   const [hasLiked, setHasLiked] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
+  const [postWriter, setPostWriter] = useState<getUser | undefined>(undefined);
+
 
   const handleView = () => navigate(`/posts/${post.post_id}/view`);
   const handleEdit = () => navigate(`/posts/${post.post_id}/edit`);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const writer: getUser| undefined = await getUserInfo(post.user_id);
+        setPostWriter(writer);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, [post.user_id]);
+
 
   const handleDelete = async () => {
     const confirmed = confirm("Are you sure you want to delete this post?");
@@ -78,6 +97,8 @@ export default function PostCard({ post, onDelete }: Props) {
       console.error("Failed to toggle like:", err);
     }
   };
+
+ 
 
   const images = post.images || [];
   const totalImages = images.length;
@@ -123,7 +144,7 @@ export default function PostCard({ post, onDelete }: Props) {
                 ) {
                   return (
                     <div key={key} className="mb-1">
-                      <strong className="capitalize">{label}:</strong> ${val.toFixed(2)}
+                      <p><strong className="capitalize">{label}:</strong> ${val.toFixed(2)}<span> BDT</span></p>
                     </div>
                   );
                 }
@@ -177,9 +198,11 @@ export default function PostCard({ post, onDelete }: Props) {
         )}
       </div>
 
+      <UserInfo username={postWriter?.username as string} imageUrl={postWriter?.profile_picture_url as string} />
       <h2 className="text-3xl font-bold text-indigo-700 mb-2">{post.title}</h2>
+
       <p className=" text-gray-800 mb-2">
-        <b>Duration:</b> {post.duration} | <b>Cost:</b> {post.total_cost} tk. | <b>Effort:</b> {post.effort}
+        <b>Duration:</b> {post.duration} | <b>Total Cost:</b> {post.total_cost} BDT | <b>Effort:</b> {post.effort}
       </p>
 
       <p className=" mb-4">

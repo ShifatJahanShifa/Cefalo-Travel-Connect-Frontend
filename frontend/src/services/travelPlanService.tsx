@@ -5,8 +5,8 @@ import { getAuthConfig } from "../utils/authConfig";
 
 export const createTravelPlan = async(data: travelPlanInput): Promise<string> => {
     try {
-        const response = await api.post(`/travelplans`, data, getAuthConfig())
-        return response.data
+        const response = await api.post(`/travelplans`, data, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {
@@ -18,8 +18,8 @@ export const createTravelPlan = async(data: travelPlanInput): Promise<string> =>
 
 export const getTravelPlans = async(): Promise<travelPlanOutput[]> => {
     try {
-        const response = await api.get(`/travelplans`, getAuthConfig())
-        return response.data
+        const response = await api.get(`/travelplans`, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {
@@ -31,9 +31,9 @@ export const getTravelPlans = async(): Promise<travelPlanOutput[]> => {
 
 export const getTravelPlanById = async(travel_plan_id: string): Promise<travelPlanOutput> => {
     try {
-        const response = await api.get(`/travelplans/${travel_plan_id}`, getAuthConfig())
-        console.log('i got',response.data)
-        return response.data
+        const response = await api.get(`/travelplans/${travel_plan_id}`, getAuthConfig());
+       
+        return response.data;
     }
     catch(error: any) 
     {
@@ -45,8 +45,8 @@ export const getTravelPlanById = async(travel_plan_id: string): Promise<travelPl
 
 export const updateTravelPlan = async(travel_plan_id: string, data: travelPlanInput): Promise<string> => {
     try {
-        const response = await api.patch(`/travelplans/${travel_plan_id}`, data, getAuthConfig())
-        return response.data
+        const response = await api.patch(`/travelplans/${travel_plan_id}`, data, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {
@@ -58,8 +58,8 @@ export const updateTravelPlan = async(travel_plan_id: string, data: travelPlanIn
 
 export const deleteTravelPlan= async(travel_plan_id: string): Promise<string> => {
     try {
-        const response = await api.delete(`/travelplans/${travel_plan_id}`, getAuthConfig())
-        return response.data
+        const response = await api.delete(`/travelplans/${travel_plan_id}`, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {
@@ -71,8 +71,8 @@ export const deleteTravelPlan= async(travel_plan_id: string): Promise<string> =>
 
 export const addTravelPlanMember = async(travel_plan_id: string, data: travelPlanMemberAdd): Promise<string> => {
     try {
-        const response = await api.post(`/travelplans/${travel_plan_id}/members`, data, getAuthConfig())
-        return response.data
+        const response = await api.post(`/travelplans/${travel_plan_id}/members`, data, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {
@@ -84,8 +84,8 @@ export const addTravelPlanMember = async(travel_plan_id: string, data: travelPla
 
 export const getTravelPlanMembers = async(travel_plan_id: string): Promise<travelPlanMember[]> => {
     try {
-        const response = await api.get(`/travelplans/${travel_plan_id}/members`, getAuthConfig())
-        return response.data
+        const response = await api.get(`/travelplans/${travel_plan_id}/members`, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {
@@ -97,8 +97,8 @@ export const getTravelPlanMembers = async(travel_plan_id: string): Promise<trave
 
 export const updateTravelPlanMemberRole = async(travel_plan_id: string, user_id: string, data: Partial<travelPlanMember>): Promise<travelPlanMember> => {
     try {
-        const response = await api.patch(`/travelplans/${travel_plan_id}/members/${user_id}/role`, data, getAuthConfig())
-        return response.data
+        const response = await api.patch(`/travelplans/${travel_plan_id}/members/${user_id}/role`, data, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {
@@ -111,8 +111,8 @@ export const updateTravelPlanMemberRole = async(travel_plan_id: string, user_id:
 
 export const getRavelPlanComments = async(travel_plan_id: string): Promise<travelPlanComment[]> => {
     try {
-        const response = await api.get(`/travelplans/${travel_plan_id}/comments`, getAuthConfig())
-        return response.data
+        const response = await api.get(`/travelplans/${travel_plan_id}/comments`, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {
@@ -124,8 +124,8 @@ export const getRavelPlanComments = async(travel_plan_id: string): Promise<trave
 
 export const createTravelPlanComment = async(travel_plan_id: string, data: travelPlanComment): Promise<travelPlanComment> => {
     try {
-        const response = await api.post(`/travelplans/${travel_plan_id}/comments`, data, getAuthConfig())
-        return response.data
+        const response = await api.post(`/travelplans/${travel_plan_id}/comments`, data, getAuthConfig());
+        return response.data;
     }
     catch(error: any) 
     {

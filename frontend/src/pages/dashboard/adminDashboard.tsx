@@ -183,6 +183,7 @@ export default function AdminDashboard() {
     {serviceData.map((item, idx) => (
       <div key={idx} className="bg-sky-100 shadow border border-sky-400 p-4 rounded">
         {Object.entries(item).map(([k, v]) => {
+          if (k.endsWith("_id")) return null;
           if (k === "location" && typeof v === "object" && v !== null) {
             return (
               <div key={k}>
@@ -244,7 +245,7 @@ export default function AdminDashboard() {
 
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 mt-10">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
 
       {renderStats()}

@@ -1,6 +1,7 @@
 import PostForm from "../../components/posts/postForm";
 import { createPost } from "../../services/postService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function CreatePostPage() {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ export default function CreatePostPage() {
     try {
       await createPost(formData);
       localStorage.removeItem('postFormData')
+      toast.success("successfully created post")
       navigate("/home");
     } 
     catch (err) {
@@ -18,7 +20,7 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="p-4">
+    <div>
       <PostForm onSubmit={handleCreate} />
     </div>
   );
