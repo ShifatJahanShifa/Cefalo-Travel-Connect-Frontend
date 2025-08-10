@@ -1,0 +1,49 @@
+import api from '../api';
+import type { authResponse, signin, signup } from '../types/auth';
+import { getAuthConfig } from '../utils/authConfig';
+
+export const userSignup = async (data: signup): Promise<authResponse> => {
+    try {
+        const response = await api.post("/auth/signup", data);
+        return response.data;
+    } 
+    catch (error: any) {
+        console.error("Signup error:", error);
+        throw error;
+    }
+};
+
+export const userSignin = async (data: signin): Promise<authResponse> => {
+    try {
+        const response = await api.post("/auth/signin", data);
+        return response.data;
+    } 
+    catch (error: any) {
+        console.error("Signin error:", error);
+        throw error;
+    }
+};
+
+export const userSignout = async (): Promise<{ message: string }> => {
+    try {
+        const response = await api.post('/auth/signout', null, getAuthConfig());
+       
+        return response.data;
+    } 
+    catch (error: any) {
+        console.error("Error during signout:", error);
+        throw new Error(error?.response?.data?.message || "Signout failed. Please try again");
+    }
+};
+
+
+export const refreshAccessToken = async (): Promise<{ accessToken: string }> => {
+    try {
+        const response = await api.get('/auth/refresh-token', { withCredentials: true});
+        return response.data;
+    } 
+    catch (error: any) {
+        console.error("Error during refreshing accesstoken:", error);
+        throw new Error(error?.response?.data?.message || "Refresh Access Token failed. Please try again");
+    }
+};
