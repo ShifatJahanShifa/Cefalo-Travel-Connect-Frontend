@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth'
 export default function Header() {
   const { isAuthenticated } = useAuth()
   return (
-    <header className="bg-blue-200 shadow-md flex justify-between">
+    <header className="">
       {(isAuthenticated && 
       <Navbar />)}
     </header>

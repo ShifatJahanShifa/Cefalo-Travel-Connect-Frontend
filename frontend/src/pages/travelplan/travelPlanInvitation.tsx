@@ -5,6 +5,8 @@ import { addTravelPlanMember } from "../../services/travelPlanService";
 import { deleteNotification, markNotificationAsRead } from "../../services/notificationService";
 import NotificationCard from "../../components/notificationCard";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { logger } from "../../utils/logger";
 
 export default function TravelPlanInvitationsPage() {
   const { user_id, username } = useAuth();
@@ -16,46 +18,48 @@ export default function TravelPlanInvitationsPage() {
     const fetchInvitations = async () => {
       try {
           let data = await getNotificationsByUsername(username!);
-          console.log('look',data)
-          data = data.filter(d => d.read === false)
+         
+          data = data.filter(d => d.read === false && d.type === "travel_plan_invitation")
           setInvitations(data);
      
       } catch (err) {
-        console.error("Failed to fetch invitations", err);
+        logger.error("Failed to fetch invitations", err);
       } finally {
         setLoading(false);
       }
     };
-    console.log('a', invitations.length)
+   
     
     fetchInvitations();
   }, [username]);
 
-  const handleAccept = async (notif: any) => {
+  const handleAccept = async (notification: any) => {
     try {
       const payload = {
-        travel_plan_id: notif.reference_id,
+        travel_plan_id: notification.reference_id,
         user_id: user_id!,
         role: "member",
       };
-      await addTravelPlanMember(notif.reference_id, payload);
-      await markNotificationAsRead(notif.notification_id);
+      await addTravelPlanMember(notification.reference_id, payload);
+      await markNotificationAsRead(notification.notification_id);
+      toast.success("Successfully accepted invitation")
       setInvitations((prev) =>
-        prev.filter((n) => n.notification_id !== notif.notification_id)
+        prev.filter((n) => n.notification_id !== notification.notification_id)
       );
+
     } catch (err) {
-      console.error("Failed to accept invitation", err);
+      logger.error("Failed to accept invitation", err);
     }
   };
 
-  const handleDecline = async (notif_id: string) => {
+  const handleDecline = async (notification_id: string) => {
     try {
-      await deleteNotification(notif_id);
+      await deleteNotification(notification_id);
       setInvitations((prev) =>
-        prev.filter((n) => n.notification_id !== notif_id)
+        prev.filter((n) => n.notification_id !== notification_id)
       );
     } catch (err) {
-      console.error("Failed to decline invitation", err);
+      logger.error("Failed to decline invitation", err);
     }
   };
 
@@ -82,12 +86,12 @@ export default function TravelPlanInvitationsPage() {
 
         {!loading && invitations.length > 0 && (
             <div className="space-y-4">
-            {invitations.map((notif) => (
+            {invitations.map((notification) => (
                 <NotificationCard
-                key={notif.notification_id}
-                notification={notif}
-                onAccept={() => handleAccept(notif)}
-                onDecline={() => handleDecline(notif.notification_id)}
+                key={notification.notification_id}
+                notification={notification}
+                onAccept={() => handleAccept(notification)}
+                onDecline={() => handleDecline(notification.notification_id)}
                 />
             ))}
             </div>

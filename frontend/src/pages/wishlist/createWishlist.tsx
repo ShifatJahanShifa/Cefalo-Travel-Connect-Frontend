@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createWishlist, updateWishlist } from "../../services/wishlistService";
 import type { getWishlistType, wishlist } from "../../types/wishlist";
+import { toast } from "react-toastify";
+import { logger } from "../../utils/logger";
 
 interface Props {
   initialData?: wishlist;
@@ -13,7 +15,7 @@ export default function WishlistForm({ initialData, onSubmitSuccess }: Props) {
     place_name: "",
     latitude: 0,
     longitude: 0,
-    type: "",
+    type: "place",
     title: "",
     theme: "",
     region: "",
@@ -54,15 +56,17 @@ export default function WishlistForm({ initialData, onSubmitSuccess }: Props) {
     try {
       if (initialData) {
         await updateWishlist(initialData.wishlist_id!, formData);
+        toast.success("Successfully updated wishlist")
       } 
       else {
         await createWishlist(formData);
-        navigate("/home");
+        toast.success("Successfully created wishlist")
+        navigate("/wishlists");
       }
       onSubmitSuccess?.();
     } 
     catch (err) {
-      console.error("Failed to save wishlist:", err);
+      logger.error("Failed to save wishlist:", err);
       alert("Failed to save wishlist. Check console for details.");
     }
   };
@@ -139,7 +143,7 @@ export default function WishlistForm({ initialData, onSubmitSuccess }: Props) {
       </div>
 
     
-      <div>
+      <div className="hidden">
         <label className="block text-sm font-medium text-gray-700">Type<span className="text-red-500">*</span></label>
         <input
           name="type"
@@ -158,7 +162,7 @@ export default function WishlistForm({ initialData, onSubmitSuccess }: Props) {
           name="theme"
           value={formData.theme}
           onChange={handleChange}
-          placeholder="Travel theme (optional)"
+          placeholder="e.g., beach, hill, mountain etc"
           className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
@@ -170,7 +174,7 @@ export default function WishlistForm({ initialData, onSubmitSuccess }: Props) {
           name="region"
           value={formData.region}
           onChange={handleChange}
-          placeholder="Region or zone"
+          placeholder="e.g., aisa, north america, south africa etc"
           className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>

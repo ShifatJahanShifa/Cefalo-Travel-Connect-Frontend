@@ -1,3 +1,5 @@
+import { logger } from "./logger";
+
 export async function uploadImageToCloudinary(file: File) {
     const url = `https://api.cloudinary.com/v1_1/dwdtpwu38/image/upload`;
 
@@ -15,7 +17,7 @@ export async function uploadImageToCloudinary(file: File) {
       return data.secure_url || null;
     } 
     catch (error) {
-      console.error("Error uploading image", error);
+      logger.error("Error uploading image", error);
       return null;
     }
 }

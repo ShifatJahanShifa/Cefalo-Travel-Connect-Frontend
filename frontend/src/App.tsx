@@ -4,16 +4,19 @@ import AppRoutes from "./routes";
 import ScrollToTopButton from "./components/scrollToTopButton";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AlertWindow from "./pages/alert";
 
 const App = () => {
   
   return (
+    <>
     <Layout>
       <AppRoutes />
-      <ToastContainer position="top-center" />
       <ScrollToTopButton />
     </Layout>
+    <ToastContainer position="top-center" autoClose={1500} />
+    </>
   )
 }
 
-export default App
+export default App;
