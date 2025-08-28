@@ -2,6 +2,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getWishlistById } from "../../services/wishlistService";
 import type { getWishlistType } from "../../types/wishlist";
+import { logger } from "../../utils/logger";
 
 export default function ViewSingleWishlist() {
   const { wishlist_id } = useParams();
@@ -13,7 +14,7 @@ export default function ViewSingleWishlist() {
         const result = await getWishlistById(wishlist_id!);
         setWishlist(result);
       } catch (err) {
-        console.error("Error fetching wishlist:", err);
+        logger.error("Error fetching wishlist:", err);
       }
     };
 

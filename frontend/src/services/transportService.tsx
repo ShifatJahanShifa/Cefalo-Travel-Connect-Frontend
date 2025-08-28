@@ -1,7 +1,7 @@
 import api from "../api";
 import { getAuthConfig } from "../utils/authConfig"; 
 import type { getTransport, transportCreation, transportUpdation } from "../types/transport";
-
+import { logger } from "../utils/logger";
 
 
 export const getTransports = async (): Promise<getTransport[]> => {
@@ -11,7 +11,7 @@ export const getTransports = async (): Promise<getTransport[]> => {
     }   
     catch (error: any) 
     {
-        console.error("Error fetching transports:", error);
+        logger.error("Error fetching transports:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch transports");
     }
 }
@@ -24,7 +24,7 @@ export const createTransport = async (data: transportCreation): Promise<getTrans
     }   
     catch (error: any) 
     {
-        console.error("Error creating transport:", error);
+        logger.error("Error creating transport:", error);
         throw new Error(error?.response?.data?.message || "Failed to create transport");
     }
 }
@@ -36,7 +36,7 @@ export const updateTransport = async (data: transportUpdation): Promise<getTrans
     }   
     catch (error: any) 
     {
-        console.error("Error updating transport:", error);
+        logger.error("Error updating transport:", error);
         throw new Error(error?.response?.data?.message || "Failed to update transport");
     }
 }

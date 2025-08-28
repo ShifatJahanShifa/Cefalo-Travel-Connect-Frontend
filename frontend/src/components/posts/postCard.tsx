@@ -6,25 +6,16 @@ import { deletePost, togglePostlike } from "../../services/postService";
 import { getUserInfo } from "../../utils/userInfo";
 import type { getUser } from "../../types/user";
 import UserInfo from "../userInfo";
+import { toast } from "react-toastify";
+import { logger } from "../../utils/logger";
+import { postFormKeyLabelMap } from "../../constants/keyLabelMap";
+import { renderStars } from "../../utils/starRenderer";
+import { LIKE_TEXT, LIKES_TEXT, TOGGLE_LIKE_ARIA, HEART_EMPTY, HEART_FILLED } from "../../constants/constantStrings";
 
 interface Props {
   post: getPost;
   onDelete?: (postId: string) => void;
 }
-
-const keyLabelMap: Record<string, string> = {
-  place_name: "Place Name",
-  accommodation_type: "Accommodation Type",
-  accommodation_name: "Accommodation Name",
-  transport_type: "Transport Type",
-  transport_name: "Transport Name",
-  food_name: "Food Name",
-  cost: "Cost",
-  cost_per_person: "Cost Per Person",
-  rating: "Rating",
-  review: "Review",
-};
-
 
 const mainFieldsPerCategory: Record<string, string[]> = {
   Accommodations: ["accommodation_type", "accommodation_name"],
@@ -32,21 +23,6 @@ const mainFieldsPerCategory: Record<string, string[]> = {
   Places: ["place_name"],
   Foods: ["food_name"],
 };
-
-function renderStars(rating: number) {
-  const maxStars = 5;
-  const filledStars = Math.round(rating);
-  const stars = [];
-
-  for (let i = 1; i <= maxStars; i++) {
-    stars.push(
-      <span key={i} className={i <= filledStars ? "text-yellow-400" : "text-gray-300"}>
-        ★
-      </span>
-    );
-  }
-  return <span>{stars}</span>;
-}
 
 export default function PostCard({ post, onDelete }: Props) {
   const { user_id } = useAuth();
@@ -67,7 +43,7 @@ export default function PostCard({ post, onDelete }: Props) {
         const writer: getUser| undefined = await getUserInfo(post.user_id);
         setPostWriter(writer);
       } catch (error) {
-        console.error("Failed to fetch user:", error);
+        logger.error("Failed to fetch user:", error);
       }
     };
 
@@ -76,15 +52,18 @@ export default function PostCard({ post, onDelete }: Props) {
 
 
   const handleDelete = async () => {
-    const confirmed = confirm("Are you sure you want to delete this post?");
-    if (!confirmed) return;
-    try {
+    const deleteConfirmed = confirm("Are you sure you want to delete this post?");
+    if (!deleteConfirmed) return;
+    try 
+    {
       await deletePost(post.post_id);
-      alert("Deleted successfully.");
+      toast.success("Deleted successfully.");
       if (onDelete) onDelete(post.post_id);
-    } catch (err) {
-      console.error("Delete failed", err);
-      alert("Something went wrong.");
+    } 
+    catch (err) 
+    {
+      logger.error("Delete failed", err);
+      toast.error("Something went wrong.");
     }
   };
 
@@ -93,8 +72,9 @@ export default function PostCard({ post, onDelete }: Props) {
       await togglePostlike(post.post_id);
       setHasLiked(!hasLiked);
       setLikesCount((prev) => (hasLiked ? Math.max(prev - 1, 0) : prev + 1));
-    } catch (err) {
-      console.error("Failed to toggle like:", err);
+    } 
+    catch (err) {
+      logger.error("Failed to toggle like:", err);
     }
   };
 
@@ -104,11 +84,21 @@ export default function PostCard({ post, onDelete }: Props) {
   const totalImages = images.length;
 
   const prevImage = () => {
-    setCurrentImageIndex((idx) => (idx === 0 ? totalImages - 1 : idx - 1));
+    setCurrentImageIndex((prevIndex) => {
+      if (prevIndex === 0) {
+        return totalImages - 1;
+      }
+      return prevIndex - 1;
+    });
   };
 
   const nextImage = () => {
-    setCurrentImageIndex((idx) => (idx === totalImages - 1 ? 0 : idx + 1));
+    setCurrentImageIndex((prevIndex) => {
+      if (prevIndex === totalImages - 1) {
+        return 0;
+      }
+      return prevIndex + 1;
+    });
   };
 
   const renderInfoCards = (category: string, items: any[]) => {
@@ -130,7 +120,7 @@ export default function PostCard({ post, onDelete }: Props) {
               className="rounded-lg border border-sky-300  p-4 shadow hover:shadow-lg transition cursor-default bg-sky-50"
             >
               {filteredEntries.map(([key, val]) => {
-                const label = keyLabelMap[key] || key.replace(/_/g, " ");
+                const label = postFormKeyLabelMap[key] || key.replace(/_/g, " ");
                 if (key === "rating" && typeof val === "number") {
                   return (
                     <div key={key} className="mb-1">
@@ -249,9 +239,9 @@ export default function PostCard({ post, onDelete }: Props) {
         { label: "Places", items: post.places },
         { label: "Transports", items: post.transports },
         { label: "Foods", items: post.postFoods },
-      ].map(({ label, items }, idx) =>
+      ].map(({ label, items }, index) =>
         items && items.length > 0 ? (
-          <section key={idx} className="mb-8">
+          <section key={index} className="mb-8">
             <h3 className="text-xl font-semibold text-blue-600 mb-4">{label}</h3>
             {renderInfoCards(label, items)}
           </section>
@@ -266,12 +256,12 @@ export default function PostCard({ post, onDelete }: Props) {
           className={`text-2xl focus:outline-none transition-colors ${
             hasLiked ? "text-red-500" : "text-gray-400 hover:text-red-500"
           }`}
-          aria-label="Toggle Like"
+          aria-label={TOGGLE_LIKE_ARIA}
         >
-          {hasLiked ? "♥" : "♡"}
+          {hasLiked ? HEART_FILLED : HEART_EMPTY}
         </button>
         <span className="text-sm text-gray-700">
-          {likesCount} {likesCount === 1 ? "Like" : "Likes"}
+          {likesCount} {likesCount === 1 ? LIKE_TEXT : LIKES_TEXT}
         </span>
       </div>
     </div>

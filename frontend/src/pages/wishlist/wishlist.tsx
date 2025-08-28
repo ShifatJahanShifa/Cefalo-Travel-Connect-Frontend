@@ -5,6 +5,7 @@ import type { getWishlistType, wishlist} from "../../types/wishlist";
 import WishlistCard from "../../components/wishlistCard";
 import type { placeDTOType } from "../../types/place";
 import { getPlaces } from "../../services/placeService";
+import { logger } from "../../utils/logger";
 
 export default function WishlistPage() {
   const [wishlists, setWishlists] = useState<getWishlistType[]>([]);
@@ -21,7 +22,7 @@ export default function WishlistPage() {
       } 
       catch (error) 
       {
-        console.error("Error fetching wishlists:", error);
+        logger.error("Error fetching wishlists:", error);
       }
     };
 
@@ -32,7 +33,7 @@ export default function WishlistPage() {
       } 
       catch (error) 
       {
-        console.error("Error fetching places:", error);
+        logger.error("Error fetching places:", error);
       }
     };
 

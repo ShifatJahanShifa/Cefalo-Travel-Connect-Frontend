@@ -2,6 +2,7 @@ import api from "../api";
 import type { accommodationCreation, accommodationDTOType, accommodationUpdation } from "../types/accommodation";
 import { getAuthConfig } from "../utils/authConfig";
 import { ONE_KILO_METER } from "../constants/unitConversion";
+import { logger } from "../utils/logger";
 
 export const getAccommodationsByProximity = async (latitude: number, longitude: number, radius: number): Promise<accommodationDTOType[]> => {
     try {
@@ -20,7 +21,7 @@ export const getAccommodationsByProximity = async (latitude: number, longitude: 
     }
     catch(error: any) 
     {
-        console.error("Error fetching accpommodations:", error);
+        logger.error("Error fetching accpommodations:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch accommodations");
     }
 }
@@ -33,7 +34,7 @@ export const getAccommodations = async (): Promise<accommodationDTOType[]> => {
     }
     catch(error: any) 
     {
-        console.error("Error fetching accpommodations:", error);
+        logger.error("Error fetching accpommodations:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch accommodations");
     }
 }
@@ -46,7 +47,7 @@ export const createAccommodation = async (data: accommodationCreation): Promise<
     }
     catch(error: any) 
     {
-        console.error("Error creating accpommodations:", error);
+        logger.error("Error creating accpommodations:", error);
         throw new Error(error?.response?.data?.message || "Failed to create accommodations");
     }
 }
@@ -59,7 +60,7 @@ export const updateAccommodation = async (data: accommodationUpdation): Promise<
     }
     catch(error: any) 
     {
-        console.error("Error updating accommodations:", error);
+        logger.error("Error updating accommodations:", error);
         throw new Error(error?.response?.data?.message || "Failed to update accommodations");
     }
 }

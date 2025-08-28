@@ -7,6 +7,7 @@ import { getUserByUsername } from "../../services/userService";
 import { createNotification } from "../../services/notificationService";
 import { useAuth } from "../../hooks/useAuth";
 import { toast } from "react-toastify";
+import { logger } from "../../utils/logger";
 
 export default function ViewTravelPlan() {
   const { travel_plan_id } = useParams();
@@ -28,7 +29,7 @@ export default function ViewTravelPlan() {
         const data = await getTravelPlanById(travel_plan_id!);
         setInitialData(data);
       } catch (err) {
-        console.error("Failed to fetch travel plan:", err);
+        logger.error("Failed to fetch travel plan:", err);
       }
     };
     fetchData();
@@ -40,7 +41,7 @@ export default function ViewTravelPlan() {
         const memberExists = members.some(member => member.user_id === user_id);
         setIsMember(memberExists);
       } catch (error) {
-        console.error("Failed to fetch travel plan members:", error);
+        logger.error("Failed to fetch travel plan members:", error);
       }
     };
     fetchMembers();
@@ -72,7 +73,7 @@ export default function ViewTravelPlan() {
         setNewMemberUsername("");
       }
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setAddMemberStatus("Failed to add member or user not found.");
       toast.error("Failed to add member or user not found.")
     }
@@ -181,7 +182,7 @@ export default function ViewTravelPlan() {
                         const updated = await getTravelPlanMembers(travel_plan_id!);
                         setMembers(updated);
                       } catch (err) {
-                        console.error("Failed to update role", err);
+                        logger.error("Failed to update role", err);
                       }
                     }}
                     className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"

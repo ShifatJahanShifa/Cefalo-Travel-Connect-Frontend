@@ -6,6 +6,8 @@ import { Camera, Save, X, User, Mail, Shield, Settings, Trash2, PhoneCall, Calen
 import type { updateUserInfo } from "../types/user";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { logger } from "../utils/logger";
+import { formatDateString } from "../utils/dateStringFormatter";
 
 export default function ProfilePage() {
   const { username } = useAuth();
@@ -30,7 +32,7 @@ export default function ProfilePage() {
         setNewPhone(data.phone_no || "");
 
       } catch (err) {
-        console.error("Failed to fetch user", err);
+        logger.error("Failed to fetch user", err);
       } finally {
         setLoading(false);
       }
@@ -48,7 +50,7 @@ export default function ProfilePage() {
         const updated = await updateUser(username!, { profile_picture_url: imageUrl });
         setUser(updated);
       } catch (err) {
-        console.error("Failed to upload profile pic", err);
+        logger.error("Failed to upload profile pic", err);
       }
     }
   };
@@ -59,7 +61,7 @@ export default function ProfilePage() {
       const updated = await updateUser(username!, { profile_picture_url: "" });
       setUser(updated);
     } catch (err) {
-      console.error("Failed to remove image", err);
+      logger.error("Failed to remove image", err);
     }
   };
 
@@ -69,7 +71,7 @@ export default function ProfilePage() {
       setUser(updated);
       setEditingBio(false);
     } catch (err) {
-      console.error("Failed to update bio", err);
+      logger.error("Failed to update bio", err);
     }
   };
 
@@ -85,8 +87,8 @@ export default function ProfilePage() {
       setNewPassword("");
       navigate('/signin')
     } catch (err) {
-      console.error("Failed to update password", err);
-      alert("Failed to update password.");
+      logger.error("Failed to update password", err);
+      toast.error("Failed to update password.");
     }
   };
 
@@ -266,7 +268,7 @@ export default function ProfilePage() {
               <div>
                 <p className="text-sm text-gray-500">Joined At</p>
                 <p className="text-gray-900 font-medium">
-                  {new Date(user.created_at).toISOString().split("T")[0]}
+                  {formatDateString(user.created_at)}
                 </p>
               </div>
             </div>

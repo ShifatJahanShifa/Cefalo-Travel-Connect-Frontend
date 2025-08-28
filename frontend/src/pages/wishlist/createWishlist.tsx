@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { createWishlist, updateWishlist } from "../../services/wishlistService";
 import type { getWishlistType, wishlist } from "../../types/wishlist";
 import { toast } from "react-toastify";
+import { logger } from "../../utils/logger";
 
 interface Props {
   initialData?: wishlist;
@@ -65,7 +66,7 @@ export default function WishlistForm({ initialData, onSubmitSuccess }: Props) {
       onSubmitSuccess?.();
     } 
     catch (err) {
-      console.error("Failed to save wishlist:", err);
+      logger.error("Failed to save wishlist:", err);
       alert("Failed to save wishlist. Check console for details.");
     }
   };

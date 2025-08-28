@@ -2,6 +2,7 @@ import api from "../api";
 import { getAuthConfig } from "../utils/authConfig"; 
 import type { restaurantCreation, restaurantDTOType, restaurantUpdation } from "../types/restaurant";
 import { ONE_KILO_METER } from "../constants/unitConversion";
+import { logger } from "../utils/logger";
 
 export const getRestauranstsByProximity = async (latitude: number, longitude: number, radius: number): Promise<restaurantDTOType[]> => {
     try {
@@ -19,7 +20,7 @@ export const getRestauranstsByProximity = async (latitude: number, longitude: nu
     }
     catch(error: any) 
     {
-        console.error("Error fetching restaurants:", error);
+        logger.error("Error fetching restaurants:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch restaurants");
     }
 }
@@ -32,7 +33,7 @@ export const getRestaurants = async (): Promise<restaurantDTOType[]> => {
     }   
     catch (error: any) 
     {
-        console.error("Error fetching restaurants:", error);
+        logger.error("Error fetching restaurants:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch restaurants");
     }
 }
@@ -45,7 +46,7 @@ export const createRestaurant = async (data: restaurantCreation): Promise<restau
     }   
     catch (error: any) 
     {
-        console.error("Error creating restaurant:", error);
+        logger.error("Error creating restaurant:", error);
         throw new Error(error?.response?.data?.message || "Failed to create restaurant");
     }
 }
@@ -57,7 +58,7 @@ export const updateRestaurant = async (data: restaurantUpdation): Promise<restau
     }   
     catch (error: any) 
     {
-        console.error("Error updating restaurant:", error);
+        logger.error("Error updating restaurant:", error);
         throw new Error(error?.response?.data?.message || "Failed to update restaurant");
     }
 }

@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { toast } from "react-toastify";
+import { logger } from "../../utils/logger";
 
 function FlyToMarker({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
@@ -18,7 +19,7 @@ function FlyToMarker({ lat, lng }: { lat: number; lng: number }) {
 
 export default function PostMapSelector() {
   const [searchText, setSearchText] = useState("");
-  const [selected, setSelected] = useState<{ lat: number; lng: number } | null>(null);
+  const [isSelected, setIsSelected] = useState<{ lat: number; lng: number } | null>(null);
   const [placeName, setPlaceName] = useState("");
 
   const navigate = useNavigate();
@@ -34,20 +35,20 @@ export default function PostMapSelector() {
       if (firstResult) {
         const lat = parseFloat(firstResult.lat);
         const lng = parseFloat(firstResult.lon);
-        setSelected({ lat, lng });
+        setIsSelected({ lat, lng });
         setPlaceName(firstResult.display_name);
       } else {
         toast.error("No results found. Manually add place name and latitude longitude");
       }
     } catch (error) {
-      console.error("Nominatim error:", error);
+      logger.error("Nominatim error:", error);
       alert("Failed to search location.");
     }
   };
 
 
   const handleAddPlace = () => {
-    if (!selected || !placeName) return;
+    if (!isSelected || !placeName) return;
 
     const returnTo = location.state?.returnTo || "/posts/create";
     const mapType = location.state?.mapType || "place";
@@ -57,8 +58,8 @@ export default function PostMapSelector() {
         state: {
             mapType,
             place_name: placeName,
-            lat: selected.lat,
-            lng: selected.lng,
+            lat: isSelected.lat,
+            lng: isSelected.lng,
             index,
         }
     });
@@ -93,26 +94,26 @@ export default function PostMapSelector() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"
         />
-        {selected && (
+        {isSelected && (
           <>
             <Marker
-              position={[selected.lat, selected.lng]}
+              position={[isSelected.lat, isSelected.lng]}
               icon={L.icon({
                 iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
               })}
             />
-            <FlyToMarker lat={selected.lat} lng={selected.lng} />
+            <FlyToMarker lat={isSelected.lat} lng={isSelected.lng} />
           </>
         )}
       </MapContainer>
 
-      {selected && (
+      {isSelected && (
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-white p-4 rounded shadow w-[90%] max-w-md space-y-2 z-[1000]">
           <p className="text-sm font-semibold">{placeName}</p>
           <p className="text-xs text-gray-600">
-            Lat: {selected.lat.toFixed(4)}, Lng: {selected.lng.toFixed(4)}
+            Lat: {isSelected.lat.toFixed(4)}, Lng: {isSelected.lng.toFixed(4)}
           </p>
           <button
             className="bg-green-600 text-white px-4 py-2 rounded w-full"

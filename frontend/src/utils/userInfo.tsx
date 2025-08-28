@@ -1,5 +1,6 @@
 import { getAllUsers } from "../services/userService";
 import type { getUser } from "../types/user";
+import { logger } from "./logger";
 
 export const getUserInfo = async (user_id: string) => {
     try 
@@ -10,6 +11,6 @@ export const getUserInfo = async (user_id: string) => {
     }
     catch(error: any) 
     {
-        console.error(error)
+        logger.error(error)
     }
 }

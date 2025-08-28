@@ -2,6 +2,7 @@ import api from "../api";
 import type { alertItem } from "../types/alert";
 import type { proximity } from "../types/proximity";
 import { getAuthConfig } from "../utils/authConfig";
+import { logger } from "../utils/logger";
 
 export const createProximity = async (data: proximity): Promise<proximity> => {
     try {
@@ -10,7 +11,7 @@ export const createProximity = async (data: proximity): Promise<proximity> => {
     }
     catch (error: any)
     {
-        console.error("Error creating proximity:", error);
+        logger.error("Error creating proximity:", error);
         throw new Error(error?.response?.data?.message || "Failed to create proximity");
     }
 }
@@ -23,7 +24,7 @@ export const getProximityByUsername = async (username: string): Promise<proximit
     }
     catch (error: any)
     {
-        console.error("Error fetching proximities:", error);
+        logger.error("Error fetching proximities:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch proximities");
     }
 }
@@ -37,7 +38,7 @@ export const checkProximities = async (data: any): Promise<alertItem[]> => {
     }
     catch (error: any)
     {
-        console.error("Error checking proximities:", error);
+        logger.error("Error checking proximities:", error);
         throw new Error(error?.response?.data?.message || "Failed to check proximities");
     }
 }
@@ -50,7 +51,7 @@ export const updateProximity = async (data: proximity): Promise<proximity> => {
     }
     catch (error: any)
     {
-        console.error("Error updating proximity:", error);
+        logger.error("Error updating proximity:", error);
         throw new Error(error?.response?.data?.message || "Failed to update proximity");
     }
 }
@@ -64,7 +65,7 @@ export const deleteProximity = async (data: proximity): Promise<proximity> => {
     }
     catch (error: any)
     {
-        console.error("Error deleting proximity:", error);
+        logger.error("Error deleting proximity:", error);
         throw new Error(error?.response?.data?.message || "Failed to delete proximity");
     }
 }

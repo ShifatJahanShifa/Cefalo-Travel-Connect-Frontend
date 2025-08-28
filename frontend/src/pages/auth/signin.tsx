@@ -6,6 +6,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useProximity } from "../../hooks/useProximity";
 import { getProximityByUsername } from "../../services/proximityService";
+import { logger } from "../../utils/logger";
 
 export default function SigninPage() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -50,7 +51,7 @@ export default function SigninPage() {
           setProximityEnabled(true);
         }
       } catch (err) {
-        console.error("Failed to fetch proximity alerts after login", err);
+        logger.error("Failed to fetch proximity alerts after login", err);
       }
       toast.success(`Welcome back, ${res.role}`, {
         autoClose: 4000
@@ -64,7 +65,7 @@ export default function SigninPage() {
       else {
         toast.error("Sign in failed. Please try again.");
       }
-      console.error(err);
+      logger.error(err);
     }
   };
 

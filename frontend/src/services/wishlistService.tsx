@@ -1,7 +1,7 @@
 import api from "../api";
 import type { wishlist, getWishlistType, groupedUsers } from "../types/wishlist";
 import { getAuthConfig } from "../utils/authConfig";
-
+import { logger } from "../utils/logger";
 
 export const createWishlist = async (data: wishlist): Promise<getWishlistType> => {
     try {
@@ -10,7 +10,7 @@ export const createWishlist = async (data: wishlist): Promise<getWishlistType> =
     }
     catch (error: any) 
     {
-        console.error("Error creating wishlist:", error);
+        logger.error("Error creating wishlist:", error);
         throw new Error(error?.response?.data?.message || "Failed to create wishlist");
     }
 } 
@@ -22,7 +22,7 @@ export const getWishlists = async (): Promise<getWishlistType[]> => {
     }
     catch (error: any) 
     {
-        console.error("Error fetching wishlists:", error);
+        logger.error("Error fetching wishlists:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch wishlists");
     }
 } 
@@ -35,7 +35,7 @@ export const updateWishlist = async (wishlist_id: string, data: wishlist): Promi
     }
     catch (error: any) 
     {
-        console.error("Error updating wishlist:", error);
+        logger.error("Error updating wishlist:", error);
         throw new Error(error?.response?.data?.message || "Failed to update wishlist");
     }
 }
@@ -47,7 +47,7 @@ export const deleteWishlist = async (wishlist_id: string): Promise<void> => {
     }
     catch (error: any) 
     {
-        console.error("Error deleting wishlist:", error);
+        logger.error("Error deleting wishlist:", error);
         throw new Error(error?.response?.data?.message || "Failed to delete wishlist");
     }
 }
@@ -60,7 +60,7 @@ export const getWishlistById = async (wishlist_id: string): Promise<getWishlistT
     }
     catch(error: any) 
     {
-         console.error("Error fetching wishlist:", error);
+         logger.error("Error fetching wishlist:", error);
         throw new Error(error?.response?.data?.message || "Failed to fetch wishlist");
     }
 }
@@ -77,7 +77,7 @@ export const getInterestedUsers = async (theme: string): Promise<groupedUsers[]>
     }
     catch (error: any) 
     {
-        console.error("Error getting interested users:", error);
+        logger.error("Error getting interested users:", error);
         throw new Error(error?.response?.data?.message || "Failed to get interested users");
     } 
 }
@@ -90,7 +90,7 @@ export const toggleVisibility = async (wishlist_id: string): Promise<string> => 
     }
     catch (error: any) 
     {
-        console.error("Error changing visibility:", error);
+        logger.error("Error changing visibility:", error);
         throw new Error(error?.response?.data?.message || "Failed to change visibility");
     }
 }

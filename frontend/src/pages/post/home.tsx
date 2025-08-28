@@ -4,6 +4,7 @@ import { getFilteredPosts } from "../../services/postService";
 import type { getPost } from "../../types/post";
 import PostCard from "../../components/posts/postCard";
 import { useNavigate } from "react-router-dom";
+import { logger } from "../../utils/logger";
 
 export default function HomePage() {
   const [posts, setPosts] = useState<getPost[]>([]);
@@ -25,7 +26,7 @@ export default function HomePage() {
       const data = await getAllPosts();
       setPosts(data);
     } catch (err) {
-      console.error("Failed to load posts:", err);
+      logger.error("Failed to load posts:", err);
     } finally {
       setLoading(false);
     }
@@ -46,7 +47,7 @@ export default function HomePage() {
       });
       setPosts(filtered);
     } catch (err) {
-      console.error("Failed to filter posts:", err);
+      logger.error("Failed to filter posts:", err);
     } finally {
       setLoading(false);
     }

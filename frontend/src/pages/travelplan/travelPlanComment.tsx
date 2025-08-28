@@ -5,6 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 import type { travelPlanComment, travelPlanMember } from "../../types/travelplan";
 import { createNotification } from "../../services/notificationService";
 import { getUserInfo } from "../../utils/userInfo";
+import { logger } from "../../utils/logger";
 
 export default function TravelPlanDiscussion() {
   const { travel_plan_id } = useParams();
@@ -23,7 +24,7 @@ export default function TravelPlanDiscussion() {
       const data = await getRavelPlanComments(travel_plan_id!);
       setComments(data);
     } catch (err) {
-      console.error("Error fetching comments:", err);
+      logger.error("Error fetching comments:", err);
     } finally {
       setLoading(false);
     }
@@ -34,7 +35,7 @@ export default function TravelPlanDiscussion() {
       const members = await getTravelPlanMembers(travel_plan_id!);
       setMembers(members);
     } catch (error) {
-      console.error("Failed to fetch travel plan members:", error);
+      logger.error("Failed to fetch travel plan members:", error);
     }
   };
  
@@ -74,7 +75,7 @@ export default function TravelPlanDiscussion() {
           })
       );
     } catch (err) {
-      console.error("Error sending notifications to members:", err);
+      logger.error("Error sending notifications to members:", err);
     }
   };
 

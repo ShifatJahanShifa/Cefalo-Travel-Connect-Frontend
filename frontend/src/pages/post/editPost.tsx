@@ -4,6 +4,7 @@ import PostForm from "../../components/posts/postForm";
 import { getPostByPostId, updatePost } from "../../services/postService";
 import type { getPost } from "../../types/post";
 import { toast } from "react-toastify";
+import { logger } from "../../utils/logger";
 
 
 export default function EditPostPage() {
@@ -17,7 +18,7 @@ export default function EditPostPage() {
         const data = await getPostByPostId(post_id!);
         setInitialData(data);
       } catch (err) {
-        console.error("Failed to fetch post for editing:", err);
+        logger.error("Failed to fetch post for editing:", err);
       }
     };
     fetchData();
@@ -32,8 +33,8 @@ export default function EditPostPage() {
       navigate("/home");
     } 
     catch (err) {
-      console.error("Post update failed:", err);
-      alert("Post update failed. Check console for details.");
+      logger.error("Post update failed:", err);
+      toast.error("Post update failed. Check console for details.");
     }
   };
 

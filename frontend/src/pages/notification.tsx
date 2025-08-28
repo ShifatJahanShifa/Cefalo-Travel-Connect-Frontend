@@ -6,6 +6,8 @@ import type { notification } from "../types/notification";
 import { markNotificationAsRead } from "../services/notificationService";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { logger } from "../utils/logger";
+import { formatDateString } from "../utils/dateStringFormatter";
 
 
 export default function NotificationsPage() {
@@ -20,7 +22,7 @@ export default function NotificationsPage() {
         data = data.filter(d => d.read === false && d.type === "plan_comment")
         setNotifications(data);
       } catch (error) {
-        console.error("Failed to fetch notifications:", error);
+        logger.error("Failed to fetch notifications:", error);
       } finally {
         setLoading(false);
       }
@@ -39,7 +41,7 @@ export default function NotificationsPage() {
     }
     catch(error)
     {
-        console.error("Failed to mark notification:", error);
+        logger.error("Failed to mark notification:", error);
     }
   }
 
@@ -61,7 +63,7 @@ export default function NotificationsPage() {
             >
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500">
-                    {new Date(notif.created_at!).toISOString().split("T")[0]}
+                    {formatDateString(notif.created_at!)}
                 </span>
                 <p className="text-gray-800">You have got notification for new travel plan comment. </p>
                 <p className="text-gray-700">

@@ -7,6 +7,7 @@ import { getNotificationsByUsername } from "../services/userService";
 import { BellRing } from "lucide-react";
 import type { notification } from "../types/notification";
 import { toast } from "react-toastify";
+import { logger } from "../utils/logger";
 
 
 export default function Navbar() {
@@ -26,7 +27,7 @@ export default function Navbar() {
                 setUnreadCount(data.length)
               } 
               catch (error) {
-                console.error("Failed to fetch notifications:", error);
+                logger.error("Failed to fetch notifications:", error);
               } 
               finally {
                 setLoading(false);
@@ -40,14 +41,14 @@ export default function Navbar() {
 
     const handleLogout = async () => {
         try {
-            await userSignout()
-            signout()
+            await userSignout();
+            signout();
             navigate("/");
         }
         catch (error) 
         {
             toast.error("Signout failed");
-            // console.error(error);
+           
         }
     };
 

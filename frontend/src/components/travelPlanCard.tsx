@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import type { getUser } from "../types/user";
 import { getUserInfo } from "../utils/userInfo";
 import UserInfo from "./userInfo";
+import { logger } from "../utils/logger";
+import { formatDateString } from "../utils/dateStringFormatter";
 
 interface Props {
   plan: travelPlanOutput;
@@ -57,7 +59,7 @@ export default function TravelPlanCard({ plan, onDelete }: Props) {
           const writer: getUser | undefined = await getUserInfo(plan.planner_id);
           setTravelPlanWriter(writer);
         } catch (error) {
-          console.error("Failed to fetch user:", error);
+          logger.error("Failed to fetch user:", error);
         }
       };
   
@@ -73,7 +75,7 @@ export default function TravelPlanCard({ plan, onDelete }: Props) {
         navigate("/travelplans");
         onDelete?.(plan.travel_plan_id);
       } catch (error) {
-        console.error("Delete failed", error);
+        logger.error("Delete failed", error);
         alert("Something went wrong.");
       }
     }
@@ -97,7 +99,7 @@ export default function TravelPlanCard({ plan, onDelete }: Props) {
             </h3>
           </div>
           <p className=" text-black">
-            From <b>{new Date(plan.start_date).toISOString().split("T")[0]}</b> To <b>{new Date(plan.end_date).toISOString().split("T")[0]}</b>
+            From <b>{formatDateString(plan.start_date)}</b> To <b>{formatDateString(plan.end_date)}</b>
           </p>
           <p className=" text-black mt-1">
             Estimated Cost: <span className="font-medium text-gray-800">{plan.estimated_cost} BDT</span>

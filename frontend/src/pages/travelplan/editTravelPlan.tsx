@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import TravelPlanForm from "./createTravelPlan";
 import type { travelPlanInput, travelPlanOutput } from "../../types/travelplan";
 import { getTravelPlanById, updateTravelPlan } from "../../services/travelPlanService";
+import { logger } from "../../utils/logger";
 
 export default function TravelPlanEditPage() {
     const { travel_plan_id } = useParams();
@@ -15,7 +16,7 @@ useEffect(() => {
       const data = await getTravelPlanById(travel_plan_id!)
       setInitialData(data);
     } catch (err) {
-      console.error("Failed to fetch post for editing:", err);
+      logger.error("Failed to fetch post for editing:", err);
     }
   };
   fetchData();

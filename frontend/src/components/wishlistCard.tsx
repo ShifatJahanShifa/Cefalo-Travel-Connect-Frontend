@@ -1,6 +1,6 @@
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { getPlaceById } from "../utils/getPlaceById";
+import { getPlaceById } from "../utils/placeInformation";
 import type { wishlist, getWishlistType } from "../types/wishlist";
 import type { placeDTOType } from "../types/place";
 import { deleteWishlist } from "../services/wishlistService";
@@ -9,6 +9,7 @@ import type { getUser } from "../types/user";
 import { getUserInfo } from "../utils/userInfo";
 import UserInfo from "./userInfo";
 import { Share2 } from "lucide-react";
+import { logger } from "../utils/logger";
 
 
 interface Props {
@@ -33,7 +34,7 @@ export default function WishlistCard({ wishlist, allPlaces }: Props) {
           const writer: getUser| undefined = await getUserInfo(wishlist.user_id);
           setWishlistWriter(writer);
         } catch (error) {
-          console.error("Failed to fetch user:", error);
+          logger.error("Failed to fetch user:", error);
         }
       };
   

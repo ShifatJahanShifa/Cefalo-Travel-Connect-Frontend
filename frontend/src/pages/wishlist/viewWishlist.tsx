@@ -10,7 +10,8 @@ import { getTravelPlansByUsername } from "../../services/userService";
 import { useProximity } from "../../hooks/useProximity";
 import { toast } from "react-toastify";
 import { getTravelPlanMembers } from "../../services/travelPlanService";
-
+import { logger } from "../../utils/logger";
+import { formatDateString } from "../../utils/dateStringFormatter";
 
 
 export default function ViewWishlistPage() {
@@ -47,7 +48,7 @@ export default function ViewWishlistPage() {
         setWishlist(result);
         setIsPublic(result.is_public)
       } catch (err) {
-        console.error("Error fetching post:", err);
+        logger.error("Error fetching post:", err);
       }
     };
 
@@ -64,7 +65,7 @@ export default function ViewWishlistPage() {
         }
       } 
       catch (err) {
-        console.warn("No existing radius found for this wishlist.");
+        logger.warn("No existing radius found for this wishlist.");
         setHasExistingRadius(false);
       }
     };
@@ -90,7 +91,7 @@ export default function ViewWishlistPage() {
     } catch (err) {
       setInterestedUsers([]);
       setShowUsers(prev => !prev);
-      console.error("Failed to fetch interested users", err);
+      logger.error("Failed to fetch interested users", err);
     }
   };
 
@@ -114,7 +115,7 @@ export default function ViewWishlistPage() {
         setUnsetNotif(false)
       } 
       catch (err) {
-        console.error("Failed to set alert radius", err);
+        logger.error("Failed to set alert radius", err);
         setRadiusStatus("Failed to set alert.");
         toast.error("Failed to set alert radius");
       }
@@ -129,7 +130,7 @@ export default function ViewWishlistPage() {
         setRadius(radius);
         setShowRadiusInput(false);
       } catch (err) {
-        console.error("Failed to set alert radius", err);
+        logger.error("Failed to set alert radius", err);
         setRadiusStatus("Failed to set alert.");
         toast.error("Failed to update alert radius");
       }
@@ -153,7 +154,7 @@ export default function ViewWishlistPage() {
     }
     catch (err: any) 
     {
-      console.error("Failed to unset alert radius", err);
+      logger.error("Failed to unset alert radius", err);
     }
   }
   const handleCancelUpdate = async () => {
@@ -168,7 +169,7 @@ export default function ViewWishlistPage() {
     }
     catch (error: any) 
     {
-      console.error("Failed to toggle visibility", error);
+      logger.error("Failed to toggle visibility", error);
     }
   }
 
@@ -179,7 +180,7 @@ export default function ViewWishlistPage() {
     }
     catch(error: any)
     {
-      console.error(error)
+      logger.error(error)
     }
   }
 
@@ -206,7 +207,7 @@ export default function ViewWishlistPage() {
     setUserTravelMembership(userMembershipMap); 
     setShowTravelPlanModal(true);
   } catch (err) {
-    console.error("Failed to load travel plans", err);
+    logger.error("Failed to load travel plans", err);
   }
 };
 
@@ -222,7 +223,7 @@ const handleSendInvitation = async (targetUserId: string, travel_plan_id: string
         const notificationResponse = await createNotification(notificationPayload);
         toast.success("Successfully sent invitation")
       } catch (err) {
-        console.error(err);
+        logger.error(err);
         
       }
 };
@@ -376,8 +377,8 @@ const handleSendInvitation = async (targetUserId: string, travel_plan_id: string
                       }}
                     >
                       <p><strong>Note:</strong> {plan.note}</p>
-                      <p><strong>Start Date:</strong> {new Date(plan.start_date).toISOString().split("T")[0]}</p>
-                      <p><strong>End Date:</strong> {new Date(plan.end_date).toISOString().split("T")[0]}</p>
+                      <p><strong>Start Date:</strong> {formatDateString(plan.start_date)}</p>
+                      <p><strong>End Date:</strong> {formatDateString(plan.end_date)}</p>
                       {isMember && (
                         <span className="text-red-500 font-semibold">Already a member</span>
                       )}

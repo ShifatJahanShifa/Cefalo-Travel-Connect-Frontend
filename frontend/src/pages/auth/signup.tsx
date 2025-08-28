@@ -4,6 +4,7 @@ import { userSignup } from "../../services/authService";
 import { useAuth } from "../../hooks/useAuth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { logger } from "../../utils/logger";
 
 
 export default function SignupPage() {
@@ -65,7 +66,7 @@ export default function SignupPage() {
       else {
         toast.error("Sign up failed. Please try again.");
       }
-      console.error(err);
+      logger.error(err);
     }
   };
 

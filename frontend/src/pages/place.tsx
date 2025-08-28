@@ -7,6 +7,7 @@ import { getWishlistsByUsername } from "../services/userService";
 import { useAuth } from "../hooks/useAuth";
 import type { getWishlistType, wishlist } from "../types/wishlist";
 import MapOverlay from "../components/mapOverlay";
+import { logger } from "../utils/logger";
 
 export default function PlacesPage() {
     const [places, setPlaces] = useState<placeDTOType[]>([]);
@@ -27,7 +28,7 @@ export default function PlacesPage() {
         } 
         catch(error) 
         {
-            
+            logger.error("failed to fetch user's wishlists", error)
         }
         };
         fetchWishlist();
@@ -40,7 +41,7 @@ export default function PlacesPage() {
             setPlaces(res);
         } 
         catch (err) {
-            // console.error("Failed to fetch places", err);
+            logger.error("Failed to fetch places", err);
         } 
         finally {
             setLoading(false);

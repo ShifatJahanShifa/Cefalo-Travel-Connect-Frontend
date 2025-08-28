@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import type { alertItem } from "../types/alert";
 import { useProximity } from "../hooks/useProximity";
 import { useAuth } from "../hooks/useAuth";
+import { logger } from "../utils/logger";
 
 export default function AlertWindow() {
   const [alerts, setAlerts] = useState<alertItem[]>([]);
@@ -22,7 +23,7 @@ export default function AlertWindow() {
         setLatitude(pos.coords.latitude);
         setLongitude(pos.coords.longitude);
       },
-      (err) => console.error("Failed to get location", err),
+      (err) => logger.error("Failed to get location", err),
       { enableHighAccuracy: true }
     );
   }, []);
@@ -50,7 +51,7 @@ export default function AlertWindow() {
 
                 const audio = new Audio("/sounds/notification-1.mp3");
                 audio.play().catch((e) => {
-                  console.warn("Autoplay blocked or error playing sound:", e);
+                  logger.warn("Autoplay blocked or error playing sound:", e);
                 });
                 
                 toast(
@@ -75,7 +76,7 @@ export default function AlertWindow() {
             setProximityEnabled(false);
           }
         } catch (err) {
-          console.error("Failed to fetch alerts", err);
+          logger.error("Failed to fetch alerts", err);
         }
       }, 2000);
 
