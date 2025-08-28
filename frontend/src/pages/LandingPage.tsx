@@ -28,7 +28,6 @@ export default function LandingPage() {
 
     const onClickHandler = () => {
         navigate('/signup')
-        console.log("Navigate to signup");
     };
 
     const features = [

@@ -1,6 +1,12 @@
 import { uploadImageToCloudinary } from "../../utils/cloudinary";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { logger } from "../../utils/logger";
+import { toast } from "react-toastify";
+import { MapType } from "../../constants/map";
+import { POST_FORM_DATA } from "../../constants/localStorage";
+import { isNonEmptyObject } from "../../utils/objectUtils";
+import { SectionNames, FieldKeys } from "../../constants/postForm";
 
 
 const effortLevels = ["easy", "medium", "hard"];
@@ -37,11 +43,12 @@ export default function PostForm({ initialData, onSubmit }: Props) {
   const navigate = useNavigate();
   
  
-  
-  useEffect(() => {
+  const [uploadingImages, setUploadingImages] = useState<{ [index: number]: boolean }>({});
 
-  const saved = localStorage.getItem("postFormData");
-    if (saved) {
+  useEffect(() => {
+    const saved = localStorage.getItem(POST_FORM_DATA);
+    if (saved) 
+    {
       setFormData(JSON.parse(saved));
     }
   }, []);
@@ -50,23 +57,26 @@ export default function PostForm({ initialData, onSubmit }: Props) {
     
   useEffect(() => {
     const state = location.state;
-    if (!state || !state.mapType || !state.place_name) return;
+    const isInvalidState = !state || !state.mapType || !state.place_name;
+    if (isInvalidState) 
+    {
+      return;
+    }
 
-    const alreadyExists = (list: any[], lat: number, lng: number) => {
+    const doesItemExistInList = (list: any[], lat: number, lng: number) => {
       return list.some((item) => item.latitude === lat && item.longitude === lng);
     };
 
     setFormData((prev: any) => {
-      if (state.mapType === "place") {
-        if (alreadyExists(prev.places || [], state.lat, state.lng)) return prev;
-      
+      if (state.mapType === MapType.PLACE) {
+        if (doesItemExistInList(prev.places || [], state.lat, state.lng)) return prev;
+  
+        const placeData = [...(prev.places || [])];
+        const isValidPlaceIndex = state.index !== undefined && placeData[state.index];
 
-        const data = [...(prev.places || [])];
-
-
-        if (state.index !== undefined && data[state.index]) {
-          data[state.index] = {
-            ...data[state.index],
+        if (isValidPlaceIndex) {
+          placeData[state.index] = {
+            ...placeData[state.index],
             place_name: state.place_name,
             latitude: state.lat,
             longitude: state.lng,
@@ -74,38 +84,37 @@ export default function PostForm({ initialData, onSubmit }: Props) {
 
           return {
             ...prev,
-            places: data,
+            places: placeData,
           };
         }
       }
 
-      if (state.mapType === "accommodation") {
-        if (alreadyExists(prev.accommodations || [], state.lat, state.lng)) return prev;
+      if (state.mapType === MapType.ACCOMMODATION) {
+        if (doesItemExistInList(prev.accommodations || [], state.lat, state.lng)) return prev;
       
-        const data = [...(prev.accommodations || [])];
+        const accommodationData = [...(prev.accommodations || [])];
+        const isValidAccommodationIndex = state.index !== undefined && accommodationData[state.index];
 
-        if (state.index !== undefined && data[state.index]) {
-          data[state.index] = {
-            ...data[state.index],
+        if (isValidAccommodationIndex) {
+          accommodationData[state.index] = {
+            ...accommodationData[state.index],
             accommodation_name: state.place_name,
             latitude: state.lat,
             longitude: state.lng,
           };
-          console.log('a', state, 'b', data)
+          
           return {
             ...prev,
-            accommodations: data,
+            accommodations: accommodationData,
           };
-        }
-
-        
+        }        
       }
-  
       return prev;
     });
 
     window.history.replaceState({}, document.title);
-    localStorage.removeItem('postFormData')
+    localStorage.removeItem(POST_FORM_DATA)
+
   }, [location.state]);
   
 
@@ -143,6 +152,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
 
   const handleImageFileChange = async (index: number, file: File | null) => {
     if (!file) return;
+     setUploadingImages((prev) => ({ ...prev, [index]: true })); 
     const url = await uploadImageToCloudinary(file);
     if (url) 
     {
@@ -152,8 +162,9 @@ export default function PostForm({ initialData, onSubmit }: Props) {
     } 
     else 
     {
-      alert("Image upload failed. Try again.");
+      toast.error("Image upload failed. Try again.");
     }
+    setUploadingImages((prev) => ({ ...prev, [index]: false })); 
   };
 
   function formatLabel(field: string): string {
@@ -168,7 +179,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
     const newFormData = { ...formData, [section]: updated };
 
     setFormData(newFormData);
-    localStorage.setItem("postFormData", JSON.stringify(newFormData)); 
+    localStorage.setItem(POST_FORM_DATA, JSON.stringify(newFormData)); 
   };
 
 
@@ -185,8 +196,10 @@ export default function PostForm({ initialData, onSubmit }: Props) {
       return converted;
     });
 
-  const cleanEmptyEntries = (arr: any[] = []) =>
-    arr.filter((item) => item && Object.values(item).some((val) => val !== null && val !== undefined && val !== ""));
+  const cleanEmptyEntries = (arr: any[] = []): any[] =>
+  { 
+    return arr.filter((item) => isNonEmptyObject(item));
+  }
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -209,7 +222,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
         const anyFieldFilled = Object.values(entry).some((val) => val !== undefined && val !== null && val !== "");
         if (anyFieldFilled && !isEntryComplete(entry, requiredFields)) 
         {
-          alert(`Please complete all fields for the ${section.slice(0, -1)} #${i + 1} or remove it.`);
+          toast.info(`Please complete all fields for the ${section.slice(0, -1)} #${i + 1} or remove it.`);
           return;
         }
       }
@@ -230,8 +243,8 @@ export default function PostForm({ initialData, onSubmit }: Props) {
     try {
       await onSubmit(payload);
     } catch (err) {
-      console.error("Form submission failed:", err);
-      alert("Form submission failed. Check console for details.");
+      logger.error("Form submission failed:", err);
+      toast.error("Form submission failed. Check console for details.");
     }
   };
 
@@ -266,7 +279,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
               );
             }
        
-            if (sectionName === "Transports" && field === "transport_type") {
+            if (sectionName === SectionNames.TRANSPORTS && field === FieldKeys.TRANSPORT_TYPE) {
               const transportTypes = ["bus", "car", "train", "flight", "boat"];
               return (
                 <div key={field} className="mb-2">
@@ -290,7 +303,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
               );
             }
 
-            if (sectionName === "Accommodations" && field === "accommodation_name") {
+            if (sectionName === SectionNames.ACCOMMODATIONS && field === FieldKeys.ACCOMMODATION_NAME) {
               return (
                 <div key={field} >
                   <label className="block font-medium text-gray-700 mb-1">Accommodation Name<span className="text-red-500">*</span></label>
@@ -308,7 +321,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
                   <button
                     type="button"
                     onClick={() =>{
-                    localStorage.setItem("postFormData", JSON.stringify(formData));
+                    localStorage.setItem(POST_FORM_DATA, JSON.stringify(formData));
                     navigate("/post/map", {
                       state: {
                         returnTo: location.pathname,
@@ -326,7 +339,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
                 </div>
               );
             }
-            if (sectionName === "Places" && field === "place_name") {
+            if (sectionName === SectionNames.PLACES && field === FieldKeys.PLACE_NAME) {
               return (
                 <div key={field} >
                   <label className="block font-medium text-gray-700 mb-1">Place Name<span className="text-red-500">*</span></label>
@@ -344,7 +357,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
                 <button
                   type="button"
                   onClick={() =>{
-                    localStorage.setItem("postFormData", JSON.stringify(formData));
+                    localStorage.setItem(POST_FORM_DATA, JSON.stringify(formData));
                     navigate("/post/map", {
                       state: {
                         returnTo: location.pathname,
@@ -362,7 +375,9 @@ export default function PostForm({ initialData, onSubmit }: Props) {
                 </div>
               );
             }
-            if (sectionName === "Images" && field === "image_url") {
+
+
+            if (sectionName === SectionNames.IMAGES && field === FieldKeys.IMAGE_URL) {
               return (
                 <div key={field} className="mb-2">
                   <input
@@ -370,21 +385,34 @@ export default function PostForm({ initialData, onSubmit }: Props) {
                     accept="image/*"
                     onChange={async (e) => {
                       const file = e.target.files?.[0] ?? null;
+                      setUploadingImages((prev) => ({ ...prev, [index]: true }));
                       await handleImageFileChange(index, file);
+                      setUploadingImages((prev) => ({ ...prev, [index]: false }));
                     }}
                     className="w-full border p-2 mb-1 rounded"
                   />
-                  {item.image_url && (
+
+                
+                  {uploadingImages[index] ? (
+                    <div className="w-32 h-20 flex items-center justify-center bg-gray-200 rounded animate-pulse">
+                      <span className="text-xs text-gray-600">Uploading...</span>
+                    </div>
+                  ) : item.image_url ? (
                     <img
                       src={item.image_url}
                       alt="Uploaded"
                       className="w-32 h-20 object-cover rounded"
                     />
+                  ) : (
+                    <div className="w-32 h-20 flex items-center justify-center bg-gray-100 text-gray-400 border rounded">
+                      No image
+                    </div>
                   )}
                 </div>
               );
             }
-            if (field === "rating") {
+
+            if (field === FieldKeys.RATING) {
               return (
                 <div key={field} className="mb-2">
                   <label className="block font-medium text-gray-700 mb-1">Rating<span className="text-red-500">*</span></label>
@@ -408,7 +436,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
               );
             }
 
-            if(sectionName === "places" && field === "latitude") 
+            if(sectionName === SectionNames.PLACES && field === FieldKeys.LATITUDE) 
             {
               return (
                 <div> 
@@ -428,7 +456,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
               )
             }
 
-            if(sectionName === "places" && field === "longitude") 
+            if(sectionName === SectionNames.PLACES && field === FieldKeys.LONGITUDE) 
             {
               return (
                 <div> 
@@ -448,7 +476,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
               )
             }
 
-            if(sectionName === "accommodations" && field === "latitude") 
+            if(sectionName === SectionNames.ACCOMMODATIONS && field === FieldKeys.LATITUDE) 
             {
               return (
                 <div> 
@@ -468,7 +496,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
               )
             }
 
-            if(sectionName === "accommodations" && field === "longitude") 
+            if(sectionName === SectionNames.ACCOMMODATIONS && field === FieldKeys.LONGITUDE) 
             {
               return (
                 <div> 
@@ -489,7 +517,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
             }
 
             return (
-              <div> 
+              <div key={field}> 
                 <label className="block font-medium text-gray-700 mb-1">{formatLabel(field)}<span className="text-red-500">*</span></label>
                 <input
                   key={field}
@@ -524,7 +552,7 @@ export default function PostForm({ initialData, onSubmit }: Props) {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-6 bg-sky-100  border border-sky-400 rounded shadow space-y-6">
+    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto mt-10 mb-10 rounded-2xl p-6 bg-sky-100  border border-sky-400 shadow space-y-6">
       <h2 className="text-2xl text-center font-bold text-blue-800">
         {initialData ? "Edit Travel Post" : "Create Travel Post"}
       </h2>
@@ -542,12 +570,12 @@ export default function PostForm({ initialData, onSubmit }: Props) {
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Total Cost<span className="text-red-500">*</span></label>
-        <input name="total_cost" type="number" value={formData.total_cost} onChange={handleChange} placeholder="Total Cost (e.g. 500.00)" className="w-full border p-2 rounded" required />
+        <input name="total_cost" type="number" value={formData.total_cost as 0} onChange={handleChange} placeholder="Total Cost (e.g. 500.00)" className="w-full border p-2 rounded" required />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Duration<span className="text-red-500">*</span></label>
-        <input name="duration" value={formData.duration} onChange={handleChange} placeholder="Duration" className="w-full border p-2 rounded" required />
+        <input name="duration" value={formData.duration} onChange={handleChange} placeholder="Duration (e.g., 1 day, 2 days ...)" className="w-full border p-2 rounded" required />
       </div>
 
       <div>

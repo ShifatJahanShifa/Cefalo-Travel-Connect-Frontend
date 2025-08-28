@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getPostByPostId } from "../../services/postService";
 import type { getPost } from "../../types/post";
 import PostCard from "../../components/posts/postCard";
+import { logger } from "../../utils/logger";
 
 export default function ViewPost() {
   const { post_id } = useParams();
@@ -15,7 +16,7 @@ export default function ViewPost() {
         const result = await getPostByPostId(post_id!);
         setPost(result);
       } catch (err) {
-        console.error("Error fetching post:", err);
+        logger.error("Error fetching post:", err);
       }
     };
 

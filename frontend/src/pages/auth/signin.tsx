@@ -4,6 +4,9 @@ import { userSignin } from "../../services/authService";
 import { useAuth } from "../../hooks/useAuth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { useProximity } from "../../hooks/useProximity";
+import { getProximityByUsername } from "../../services/proximityService";
+import { logger } from "../../utils/logger";
 
 export default function SigninPage() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -11,6 +14,7 @@ export default function SigninPage() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { signin } = useAuth();
+  const { setProximityEnabled } = useProximity()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -40,6 +44,18 @@ export default function SigninPage() {
     try {
       const res = await userSignin(form);
       signin(res.username, res.user_id, res.role, res.accessToken, res.refreshToken);
+      try {
+        const proximityData = await getProximityByUsername(res.username)
+       
+        if (proximityData.length > 0) {
+          setProximityEnabled(true);
+        }
+      } catch (err) {
+        logger.error("Failed to fetch proximity alerts after login", err);
+      }
+      toast.success(`Welcome back, ${res.role}`, {
+        autoClose: 4000
+      })
       navigate("/home");
     } 
     catch (err: any) {
@@ -49,7 +65,7 @@ export default function SigninPage() {
       else {
         toast.error("Sign in failed. Please try again.");
       }
-      console.error(err);
+      logger.error(err);
     }
   };
 
@@ -59,12 +75,12 @@ export default function SigninPage() {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full space-y-4"
       >
-        <h2 className="text-3xl font-bold text-center text-blue-700 mb-2">Welcome Back</h2>
-        <p className="text-center text-gray-600 mb-4">Login to your account</p>
-
+        <h2 className="text-3xl font-bold text-center text-blue-600 mb-2">Welcome Back <br></br><span className="text-blue-800">Travel Enthusiast</span></h2>
+        <h3 className="text-center text-gray-600 mb-4">Login to your account</h3>
+        <p><span className="text-red-500">*</span> indicates required field</p>
      
         <div>
-          <label className="block mb-1 font-medium">Email</label>
+          <label className="block mb-1 font-medium">Email<span className="text-red-500">*</span></label>
           <input
             name="email"
             type="email"
@@ -84,7 +100,7 @@ export default function SigninPage() {
 
     
         <div>
-          <label className="block mb-1 font-medium">Password</label>
+          <label className="block mb-1 font-medium">Password<span className="text-red-500">*</span></label>
           <div className="relative">
             <input
               name="password"

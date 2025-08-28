@@ -9,21 +9,33 @@ import type { placeCreation, placeUpdation, placeDTOType } from "../../types/pla
 import type { accommodationCreation, accommodationDTOType, accommodationUpdation } from "../../types/accommodation";
 import type { transportCreation, transportUpdation, getTransport } from "../../types/transport";
 import type { restaurantCreation, restaurantUpdation, restaurantDTOType } from "../../types/restaurant";
+import { logger } from "../../utils/logger";
+import type { adminDashboardFormType, adminDashboardServiceType } from "../../types/adminDashboard";
 
-// i am keepng the type definition here for now.
+import {
+  AdminDashboardTabs,
+  AdminDashboardServices,
+  AdminDashboardServiceMode,
+} from "../../constants/adminDashboard";
+import { formatDateString } from "../../utils/dateStringFormatter";
+
+// import type {
+//   AdminDashboardTabs as AdminDashboardTabsType,
+//   AdminDashboardServices as AdminDashboardServicesType,
+//   AdminDashboardServiceMode as AdminDashboardServiceModeType,
+// } from "../../constants/adminDashboard";
+
+
 
 export default function AdminDashboard() {
 
-  type formType = placeCreation | placeUpdation | accommodationCreation | accommodationUpdation | transportCreation | transportUpdation | restaurantCreation | restaurantUpdation;
-  type service = placeDTOType | restaurantDTOType | accommodationDTOType | getTransport
-
   const [users, setUsers] = useState<getUser[]>([]);
   const [admins, setAdmins] = useState<getUser[]>([]);
-  const [selectedTab, setSelectedTab] = useState<"users" | "services" | "admins">("users");
-  const [serviceType, setServiceType] = useState<"places" | "accommodations" | "transports" | "restaurants">("places");
-  const [serviceMode, setServiceMode] = useState<"view" | "add" | "edit">("view");
-  const [serviceData, setServiceData] = useState<service[]>([]);
-  const [form, setForm] = useState<formType>({} as formType);
+  const [selectedTab, setSelectedTab] = useState<AdminDashboardTabs>(AdminDashboardTabs.USERS);
+  const [serviceType, setServiceType] = useState<AdminDashboardServices>(AdminDashboardServices.PLACES);
+  const [serviceMode, setServiceMode] = useState<AdminDashboardServiceMode>(AdminDashboardServiceMode.VIEW);
+  const [serviceData, setServiceData] = useState<adminDashboardServiceType[]>([]);
+  const [form, setForm] = useState<adminDashboardFormType>({} as adminDashboardFormType);
   const [stats, setStats] = useState({ total_user: 0, explorer: 0, traveller: 0, admin: 0 });
 
   useEffect(() => {
@@ -53,15 +65,15 @@ export default function AdminDashboard() {
 
   const handleServiceFetch = async () => {
     let data: any[] = [];
-    if (serviceType === "places") data = await getPlaces();
-    if (serviceType === "accommodations") data = await getAccommodations();
-    if (serviceType === "transports") data = await getTransports();
-    if (serviceType === "restaurants") data = await getRestaurants();
+    if (serviceType === AdminDashboardServices.PLACES) data = await getPlaces();
+    if (serviceType === AdminDashboardServices.ACCOMMODATIONS) data = await getAccommodations();
+    if (serviceType === AdminDashboardServices.TRANSPORTS) data = await getTransports();
+    if (serviceType === AdminDashboardServices.RESTAURANTS) data = await getRestaurants();
     setServiceData(data);
   };
 
   useEffect(() => {
-    if (selectedTab === "services" && serviceMode === "view") {
+    if (selectedTab === AdminDashboardTabs.SERVICES && serviceMode === AdminDashboardServiceMode.VIEW) {
       handleServiceFetch();
     }
   }, [serviceType, selectedTab, serviceMode]);
@@ -76,9 +88,9 @@ export default function AdminDashboard() {
         }
       });
 
-      if (serviceType === "places") 
+      if (serviceType === AdminDashboardServices.PLACES) 
       {
-        if (serviceMode === "add") 
+        if (serviceMode === AdminDashboardServiceMode.ADD) 
         {
           await createPlace(normalizedForm as placeCreation);
         } 
@@ -87,9 +99,9 @@ export default function AdminDashboard() {
           await updatePlace(normalizedForm as placeUpdation);
         }
       } 
-      else if (serviceType === "accommodations") 
+      else if (serviceType === AdminDashboardServices.ACCOMMODATIONS) 
       {
-        if (serviceMode === "add") 
+        if (serviceMode === AdminDashboardServiceMode.ADD) 
         {
           await createAccommodation(normalizedForm as accommodationCreation);
         } 
@@ -98,9 +110,9 @@ export default function AdminDashboard() {
           await updateAccommodation(normalizedForm as accommodationUpdation);
         }
       } 
-      else if (serviceType === "transports") 
+      else if (serviceType === AdminDashboardServices.TRANSPORTS) 
       {
-        if (serviceMode === "add") 
+        if (serviceMode === AdminDashboardServiceMode.ADD) 
         {
           await createTransport(normalizedForm as transportCreation);
         } 
@@ -109,9 +121,9 @@ export default function AdminDashboard() {
           await updateTransport(normalizedForm as transportUpdation);
         }
       } 
-      else if (serviceType === "restaurants") 
+      else if (serviceType === AdminDashboardServices.RESTAURANTS) 
       {
-        if (serviceMode === "add") 
+        if (serviceMode === AdminDashboardServiceMode.ADD) 
         {
           await createRestaurant(normalizedForm as restaurantCreation);
         } 
@@ -120,12 +132,12 @@ export default function AdminDashboard() {
         }
       }
 
-      setForm({} as formType);
+      setForm({} as adminDashboardFormType);
       handleServiceFetch();
     } 
     catch (err) 
     {
-      console.error("Error submitting service form", err);
+      logger.error("Error submitting service form", err);
     }
   };
 
@@ -151,7 +163,7 @@ export default function AdminDashboard() {
           <p><b>Email:</b> {user.email}</p>
           <p><b>Phone:</b> {user.phone_no}</p>
           <p><b>Role:</b> {user.role}</p>
-          <p><b>Joined:</b> {new Date(user.created_at!).toISOString().split("T")[0]}</p>
+          <p><b>Joined:</b> {formatDateString(user.created_at!)}</p>
           <div className="mt-2 flex gap-2">
             <button onClick={() => handleUpdateRole(user.username)} className="bg-green-500 text-white px-3 py-1 rounded">Make Admin</button>
             <button onClick={() => handleDeleteUser(user.username)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
@@ -170,7 +182,7 @@ export default function AdminDashboard() {
           <p><b>Email:</b> {user.email}</p>
           <p><b>Phone:</b> {user.phone_no}</p>
           <p><b>Role:</b> {user.role}</p>
-          <p><b>Joined:</b> {new Date(user.created_at!).toISOString().split("T")[0]}</p>
+          <p><b>Joined:</b> {formatDateString(user.created_at!)}</p>
          
         </div>
       ))}
@@ -183,6 +195,7 @@ export default function AdminDashboard() {
     {serviceData.map((item, idx) => (
       <div key={idx} className="bg-sky-100 shadow border border-sky-400 p-4 rounded">
         {Object.entries(item).map(([k, v]) => {
+          if (k.endsWith("_id")) return null;
           if (k === "location" && typeof v === "object" && v !== null) {
             return (
               <div key={k}>
@@ -210,7 +223,7 @@ export default function AdminDashboard() {
     restaurants: ["restaurant_id", "restaurant_name", "latitude", "longitude"],
   };
 
-  const isEdit = serviceMode === "edit";
+  const isEdit = serviceMode === AdminDashboardServiceMode.EDIT;
   const rawFields = fieldsMap[serviceType];
 
   const fields = isEdit
@@ -244,7 +257,7 @@ export default function AdminDashboard() {
 
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 mt-10">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
 
       {renderStats()}
@@ -272,11 +285,11 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {selectedTab === "users" && renderUsers()}
+      {selectedTab === AdminDashboardTabs.USERS && renderUsers()}
 
-      {selectedTab === "admins" && renderAdmins()}
+      {selectedTab === AdminDashboardTabs.ADMINS && renderAdmins()}
 
-      {selectedTab === "services" && (
+      {selectedTab === AdminDashboardTabs.SERVICES && (
         <>
           <div className="flex gap-3 mb-4">
             {["places", "accommodations", "transports", "restaurants"].map((s) => (
@@ -302,8 +315,8 @@ export default function AdminDashboard() {
             ))}
           </div>
 
-          {serviceMode === "view" && renderServiceView()}
-          {(serviceMode === "add" || serviceMode === "edit") && renderServiceForm()}
+          {serviceMode === AdminDashboardServiceMode.VIEW && renderServiceView()}
+          {(serviceMode === AdminDashboardServiceMode.ADD || serviceMode === AdminDashboardServiceMode.EDIT) && renderServiceForm()}
         </>
       )}
     </div>

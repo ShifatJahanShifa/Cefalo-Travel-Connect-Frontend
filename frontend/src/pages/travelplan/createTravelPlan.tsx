@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createTravelPlan, updateTravelPlan } from '../../services/travelPlanService';
 import type { travelPlanInput } from "../../types/travelplan";
+import { toast } from "react-toastify";
+
 
 interface Props {
   initialData?: travelPlanInput; 
@@ -105,10 +107,12 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
       if (initialData) {
         await updateTravelPlan(initialData.travel_plan_id!, formData);
         localStorage.removeItem('travelFormData')
+        toast.success("successfully updated travel plan")
       } 
       else {
         await createTravelPlan(formData);
         localStorage.removeItem("travelFormData");
+        toast.success("successfully created travel plan")
       }
       navigate("/travelplans");
     } 
@@ -151,8 +155,7 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
   };
 
   return (
-
-    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-8 bg-sky-100 mt-6 border mb-6 border-sky-400 rounded-lg shadow space-y-6">
+    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-8 bg-sky-100 mt-10 border mb-10 border-sky-400 rounded-lg shadow space-y-6">
       <h2 className="text-center text-2xl font-bold text-blue-800 pb-2">
         {initialData ? "Edit Travel Plan" : "Create Travel Plan"}
       </h2>
@@ -165,7 +168,7 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
             name="start_date"
             value={formData.start_date}
             onChange={handleChange}
-            placeholder="Start Date"
+            placeholder="YYYY-MM-DD"
             className="w-full border p-2 rounded mt-1"
             required
           />
@@ -176,7 +179,7 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
             name="end_date"
             value={formData.end_date}
             onChange={handleChange}
-            placeholder="End Date"
+            placeholder="YYYY-MM-DD"
             className="w-full border p-2 rounded mt-1"
             required
           />
@@ -199,7 +202,7 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
         <input
           name="estimated_cost"
           type="number"
-          value={formData.estimated_cost ?? ""}
+          value={formData.estimated_cost}
           onChange={handleChange}
           placeholder="Estimated Cost"
           className="w-full border p-2 rounded mt-1"
@@ -230,31 +233,34 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
 
         {formData.places?.map((place, index) => (
           <div key={index} className="border border-gray-300 p-3 rounded mb-3 bg-gray-50">
+            <div>
+              <label className="font-medium">Place Name<span className="text-red-500">*</span></label>
             <div className="flex flex-row gap-2 items-center justify-between">
-            <input
-              type="text"
-              value={place.place_name}
-              placeholder="Place Name"
-              onChange={(e) => {
-                const updated = [...formData.places!];
-                updated[index].place_name = e.target.value;
-                setFormData((prev) => ({ ...prev, places: updated }));
-              }}
-              className="flex-1 border p-2 rounded mb-2"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                localStorage.setItem("travelFormData", JSON.stringify(formData));
-                navigate("/travelplan/map", {
-                  state: { returnTo: location.pathname, mapType: "place" , index},
-                });
-              }}
-              className="text-white p-2 mb-2 bg-blue-600 rounded text-md"
-            >
-              Add from Map
-            </button>
-            </div>
+              <input
+                type="text"
+                value={place.place_name}
+                placeholder="Place Name"
+                onChange={(e) => {
+                  const updated = [...formData.places!];
+                  updated[index].place_name = e.target.value;
+                  setFormData((prev) => ({ ...prev, places: updated }));
+                }}
+                className="flex-1 border p-2 rounded mb-2"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.setItem("travelFormData", JSON.stringify(formData));
+                  navigate("/travelplan/map", {
+                    state: { returnTo: location.pathname, mapType: "place" , index},
+                  });
+                }}
+                className="text-white p-2 mb-2 bg-blue-600 rounded text-md"
+              >
+                Add from Map
+              </button>
+            </div> </div>
+
             <div className="grid grid-cols-2 gap-2">
               <input
                 type="number"
@@ -295,6 +301,7 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
           <div className="flex flex-col mb-2">
             <label className="font-bold text-lg mb-2 border-b pb-1 border-blue-700">Accommodations</label>
             <div className="flex gap-2">
+              
               <button
                 type="button"
                 onClick={() =>
@@ -317,27 +324,32 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
 
           {formData.accommodations?.map((acc, index) => (
             <div key={index} className="border border-gray-300 p-3 rounded mb-3 bg-gray-50">
-              <input
-                value={acc.accommodation_type}
-                placeholder="Type (e.g. Hotel)"
-                onChange={(e) => {
-                  const updated = [...formData.accommodations!];
-                  updated[index].accommodation_type = e.target.value;
-                  setFormData((prev) => ({ ...prev, accommodations: updated }));
-                }}
-                className="w-full border p-2 rounded mb-2"
-              />
+              <div>
+                <label className="font-medium">Accommodation Type<span className="text-red-500">*</span></label>
+                <input
+                  value={acc.accommodation_type}
+                  placeholder="Type (e.g. Hotel)"
+                  onChange={(e) => {
+                    const updated = [...formData.accommodations!];
+                    updated[index].accommodation_type = e.target.value;
+                    setFormData((prev) => ({ ...prev, accommodations: updated }));
+                  }}
+                  className="w-full border p-2 rounded mb-2"
+                />
+              </div>
+              <div>
+                <label className="font-medium">Accommodation Name<span className="text-red-500">*</span></label>
               <div className="flex flex-row gap-2 items-center justify-between">
-              <input
-                value={acc.accommodation_name}
-                placeholder="Name"
-                onChange={(e) => {
-                  const updated = [...formData.accommodations!];
-                  updated[index].accommodation_name = e.target.value;
-                  setFormData((prev) => ({ ...prev, accommodations: updated }));
-                }}
-                className="flex-1 border p-2 rounded mb-2"
-              />
+                <input
+                  value={acc.accommodation_name}
+                  placeholder="Name"
+                  onChange={(e) => {
+                    const updated = [...formData.accommodations!];
+                    updated[index].accommodation_name = e.target.value;
+                    setFormData((prev) => ({ ...prev, accommodations: updated }));
+                  }}
+                  className="flex-1 border p-2 rounded mb-2"
+                />
               <button
                 type="button"
                 onClick={() => {
@@ -349,7 +361,7 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
                 className="text-white p-2 bg-blue-600 mb-2 rounded text-md"
               >
                 Add from Map
-              </button> </div>
+              </button> </div></div>
               <div className="grid grid-cols-2 gap-2">
                 <input
                   type="number"
@@ -403,22 +415,28 @@ export default function TravelPlanForm({ initialData, travel_plan_id }: Props) {
             key={index}
             className="border border-gray-300 p-3 rounded mb-3 bg-gray-50"
           >
-            <input
-              value={trans.transport_type}
-              placeholder="Transport Type (e.g. Bus)"
-              onChange={(e) =>
-                updateTransport(index, "transport_type", e.target.value)
-              }
-              className="w-full border p-2 rounded mb-2"
-            />
-            <input
-              value={trans.transport_name}
-              placeholder="Transport Name"
-              onChange={(e) =>
-                updateTransport(index, "transport_name", e.target.value)
-              }
-              className="w-full border p-2 rounded"
-            />
+            <div>
+              <label className="font-medium">Transport Type<span className="text-red-500">*</span></label>
+              <input
+                value={trans.transport_type}
+                placeholder="Transport Type (e.g. Bus)"
+                onChange={(e) =>
+                  updateTransport(index, "transport_type", e.target.value)
+                }
+                className="w-full border p-2 rounded mb-2"
+              />
+            </div>
+            <div>
+              <label className="font-medium">Transport Name<span className="text-red-500">*</span></label>
+              <input
+                value={trans.transport_name}
+                placeholder="Transport Name"
+                onChange={(e) =>
+                  updateTransport(index, "transport_name", e.target.value)
+                }
+                className="w-full border p-2 rounded"
+              />
+            </div>
             <button
               type="button"
               onClick={() => removeTransport(index)}

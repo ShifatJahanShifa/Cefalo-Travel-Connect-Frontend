@@ -2,14 +2,12 @@ import { data, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TravelPlanCard from "../../components/travelPlanCard";
 import type { travelPlanMember, travelPlanOutput } from "../../types/travelplan";
-import {
-  getTravelPlanById,
-  getTravelPlanMembers,
-  updateTravelPlanMemberRole,
-} from "../../services/travelPlanService";
+import { getTravelPlanById, getTravelPlanMembers, updateTravelPlanMemberRole } from "../../services/travelPlanService";
 import { getUserByUsername } from "../../services/userService";
 import { createNotification } from "../../services/notificationService";
 import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-toastify";
+import { logger } from "../../utils/logger";
 
 export default function ViewTravelPlan() {
   const { travel_plan_id } = useParams();
@@ -31,7 +29,7 @@ export default function ViewTravelPlan() {
         const data = await getTravelPlanById(travel_plan_id!);
         setInitialData(data);
       } catch (err) {
-        console.error("Failed to fetch travel plan:", err);
+        logger.error("Failed to fetch travel plan:", err);
       }
     };
     fetchData();
@@ -43,7 +41,7 @@ export default function ViewTravelPlan() {
         const memberExists = members.some(member => member.user_id === user_id);
         setIsMember(memberExists);
       } catch (error) {
-        console.error("Failed to fetch travel plan members:", error);
+        logger.error("Failed to fetch travel plan members:", error);
       }
     };
     fetchMembers();
@@ -55,6 +53,7 @@ export default function ViewTravelPlan() {
     setAddMemberStatus("");
     if (!newMemberUsername.trim()) {
       setAddMemberStatus("Username cannot be empty.");
+      toast.error("Username cannot be empty.")
       return;
     }
 
@@ -70,16 +69,18 @@ export default function ViewTravelPlan() {
 
       if (notificationResponse) {
         setAddMemberStatus(`Invitation sent to ${user.username}`);
+        toast.success(`Invitation sent to ${user.username}`)
         setNewMemberUsername("");
       }
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setAddMemberStatus("Failed to add member or user not found.");
+      toast.error("Failed to add member or user not found.")
     }
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-8 bg-sky-100 border border-sky-400 mt-10 rounded-lg shadow-md">
+    <div className="p-6 max-w-5xl mx-auto space-y-8 bg-sky-100 border border-sky-400 mt-10 mb-10 rounded-lg shadow-md">
       {/* Travel Plan Summary */}
       <TravelPlanCard plan={initialData} onDelete={() => navigate("/home")} />
 
@@ -131,9 +132,9 @@ export default function ViewTravelPlan() {
           >
             Send Invitation
           </button>
-          {addMemberStatus && (
+          {/* {addMemberStatus && (
             <p className="text-sm text-gray-600 mt-1">{addMemberStatus}</p>
-          )}
+          )} */}
         </div>
       )}
 
@@ -177,10 +178,11 @@ export default function ViewTravelPlan() {
                           data
                         
                         );
+                        toast.success("Successfully updated member's role")
                         const updated = await getTravelPlanMembers(travel_plan_id!);
                         setMembers(updated);
                       } catch (err) {
-                        console.error("Failed to update role", err);
+                        logger.error("Failed to update role", err);
                       }
                     }}
                     className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"

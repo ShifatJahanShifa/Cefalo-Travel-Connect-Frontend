@@ -1,3 +1,5 @@
+import { logger } from "./logger";
+
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX;
 
 export const fetchLocationFromMapbox = async (place: string): Promise<{ latitude: number; longitude: number }| null> => {
@@ -25,7 +27,7 @@ export const fetchLocationFromMapbox = async (place: string): Promise<{ latitude
     }
     catch (err) 
     {
-        console.error("Error fetching coordinates from Mapbox:", err);
+        logger.error("Error fetching coordinates from Mapbox:", err);
         return null;
     }
 };

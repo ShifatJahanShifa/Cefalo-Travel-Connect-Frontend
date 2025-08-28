@@ -10,6 +10,7 @@ import type { getPost } from "../../types/post";
 import type { getWishlistType } from "../../types/wishlist";
 import type { placeDTOType } from "../../types/place";
 import type { travelPlanOutput } from "../../types/travelplan";
+import { logger } from "../../utils/logger";
 
 export default function Dashboard() {
   const { username, user_id } = useAuth();
@@ -36,7 +37,7 @@ export default function Dashboard() {
         postData = await getPostsByUsername(username!);
         setPosts(postData);
       } catch (err) {
-        console.error("Failed to fetch posts:", err);
+        logger.error("Failed to fetch posts:", err);
       }
 
     
@@ -44,7 +45,7 @@ export default function Dashboard() {
         wishlistData = await getWishlistsByUsername(username!);
         setWishlists(wishlistData);
       } catch (err) {
-        console.error("Failed to fetch wishlists:", err);
+        logger.error("Failed to fetch wishlists:", err);
       }
 
   
@@ -52,7 +53,7 @@ export default function Dashboard() {
         placeData = await getPlaces();
         setPlaces(placeData);
       } catch (err) {
-        console.error("Failed to fetch places:", err);
+        logger.error("Failed to fetch places:", err);
       }
 
    
@@ -60,7 +61,7 @@ export default function Dashboard() {
         travelplansData = await getTravelPlansByUsername(username!);
         setTravelPlans(travelplansData);
       } catch (err) {
-        console.error("Failed to fetch travel plans:", err);
+        logger.error("Failed to fetch travel plans:", err);
       }
 
       setLoading(false);
@@ -71,7 +72,7 @@ export default function Dashboard() {
 
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8">
+    <div className="max-w-5xl mx-auto p-6 space-y-8 mt-10">
       <h1 className="text-3xl font-bold text-gray-800">📊 Your Dashboard</h1>
 
 

@@ -1,0 +1,1 @@
+export const ONE_KILO_METER = 1000;
